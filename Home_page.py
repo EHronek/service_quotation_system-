@@ -133,6 +133,56 @@ update_register_button.grid(row= 15, column =0)
 delete_button = tk.Button(app_frame2, text="Delete Organization account")
 delete_button.grid(row=16, column=0, pady=10, padx=20)
 
+# Designing employee registration section
+emp_details_frame = ttk.Frame(employee_reg_tab)
+emp_details_frame.pack(side=tk.LEFT)
+# creating labels for employee personnal details
+tk.Label(emp_details_frame, text="EMPLOYEE PERSONAL DETAILS").grid(row=0, column=0)
+tk.Label(emp_details_frame, text="Employee Name").grid(row=1, column=0)
+tk.Label(emp_details_frame, text="Employee Id").grid(row=3, column=0)
+tk.Label(emp_details_frame, text="Employee Contact").grid(row=5, column=0)
+tk.Label(emp_details_frame, text="Employees Email").grid(row=7, column=0)
+tk.Label(emp_details_frame, text="Role").grid(row=9, column=0)
+
+#creating Entries for employee details
+emp_name_entry = tk.Entry(emp_details_frame)
+emp_name_entry.grid(row=2, column=0)
+emp_id = tk.Entry(emp_details_frame)
+emp_id.grid(row=4, column=0)
+emp_contact_entry = tk.Entry(emp_details_frame)
+emp_contact_entry.grid(row=6, column=0)
+emp_role_entry = tk.Entry(emp_details_frame)
+emp_role_entry.grid(row=8, column=0)
+
+# Employee detail table
+def emp_table_design():
+    emp_table_frame = tk.Frame(employee_reg_tab)
+    emp_table_frame.pack(side=tk.RIGHT )
+    emp_tree = ttk.Treeview(emp_table_frame)
+
+    #define employee columns
+    emp_tree['columns'] = ("employee_id", "employee_name", "employee_contact", "employee_email", "employee_role")
+    emp_tree.column("#0", width=100, minwidth=25)
+    emp_tree.column("employee_id", anchor=tk.CENTER, width=80)
+    emp_tree.column("employee_name", anchor=tk.W, width=100)
+    emp_tree.column("employee_contact", anchor=tk.W, width=100)
+    emp_tree.column("employee_email", anchor=tk.W, width=100)
+    emp_tree.column("employee_role", anchor=tk.W, width=100)
+
+    #Creating column Headings
+    emp_tree.heading("#0", text="Label", anchor=tk.W)
+    emp_tree.heading("employee_id", text="employee_id", anchor=tk.CENTER)
+    emp_tree.heading("employee_name", text="employee_name",anchor=tk.W)
+    emp_tree.heading("employee_contact", text="employee_contact", anchor=tk.W)
+    emp_tree.heading("employee_email", text="employee_email", anchor=tk.W)
+    emp_tree.heading("employee_role", text="employee_role", anchor=tk.W)
+
+    #insert data
+    emp_tree.pack()
+
+ 
+
+emp_table_design()
 
 emp_frame = tk.Frame(employee_reg_tab, bg="#5b93a6")
 emp_frame.pack()
