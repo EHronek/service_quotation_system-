@@ -134,6 +134,9 @@ delete_button = tk.Button(app_frame2, text="Delete Organization account")
 delete_button.grid(row=16, column=0, pady=10, padx=20)
 
 # Designing employee registration section
+
+tk.Label(employee_reg_tab, text="REGISTER EMPLOYEE BELOW").pack(side="top")
+
 emp_details_frame = ttk.Frame(employee_reg_tab)
 emp_details_frame.pack(side=tk.LEFT)
 # creating labels for employee personnal details
@@ -145,14 +148,29 @@ tk.Label(emp_details_frame, text="Employees Email").grid(row=7, column=0)
 tk.Label(emp_details_frame, text="Role").grid(row=9, column=0)
 
 #creating Entries for employee details
-emp_name_entry = tk.Entry(emp_details_frame)
+emp_name_entry = tk.Entry(emp_details_frame, width=30)
 emp_name_entry.grid(row=2, column=0)
-emp_id = tk.Entry(emp_details_frame)
+emp_id = tk.Entry(emp_details_frame, width=30)
 emp_id.grid(row=4, column=0)
-emp_contact_entry = tk.Entry(emp_details_frame)
+emp_contact_entry = tk.Entry(emp_details_frame, width=30)
 emp_contact_entry.grid(row=6, column=0)
-emp_role_entry = tk.Entry(emp_details_frame)
-emp_role_entry.grid(row=8, column=0)
+emp_email_entry = tk.Entry(emp_details_frame, width=30)
+emp_email_entry.grid(row=8, column=0)
+emp_role_entry = tk.Entry(emp_details_frame, width=30)
+emp_role_entry.grid(row=10, column=0)
+
+#creating buttons for register and and update employee
+reg_emp_button = tk.Button(emp_details_frame, text="Register employee")
+reg_emp_button.grid(row=11, column=0, pady=10)
+
+clear_button = tk.Button(emp_details_frame, text="Clear Fields")
+clear_button.grid(row=12, column=0, pady=10)
+
+update_employee_button = tk.Button(emp_details_frame, text="Update employee details")
+update_employee_button.grid(row=13, column=0, pady=10)
+
+delete_employee_button = tk.Button(emp_details_frame, text="Delete employee details")
+delete_employee_button.grid(row=14, column=0, pady=10)
 
 # Employee detail table
 def emp_table_design():
@@ -162,7 +180,7 @@ def emp_table_design():
 
     #define employee columns
     emp_tree['columns'] = ("employee_id", "employee_name", "employee_contact", "employee_email", "employee_role")
-    emp_tree.column("#0", width=100, minwidth=25)
+    emp_tree.column("#0", width=0, stretch=tk.NO)
     emp_tree.column("employee_id", anchor=tk.CENTER, width=80)
     emp_tree.column("employee_name", anchor=tk.W, width=100)
     emp_tree.column("employee_contact", anchor=tk.W, width=100)
@@ -170,7 +188,7 @@ def emp_table_design():
     emp_tree.column("employee_role", anchor=tk.W, width=100)
 
     #Creating column Headings
-    emp_tree.heading("#0", text="Label", anchor=tk.W)
+    emp_tree.heading("#0", text="", anchor=tk.W)
     emp_tree.heading("employee_id", text="employee_id", anchor=tk.CENTER)
     emp_tree.heading("employee_name", text="employee_name",anchor=tk.W)
     emp_tree.heading("employee_contact", text="employee_contact", anchor=tk.W)
