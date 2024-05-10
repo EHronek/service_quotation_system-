@@ -34,7 +34,7 @@ submenu.add_command(label="Option 3", command=lambda: on_menu_select("Option 3")
 root.mainloop()
  """
 
-import tkinter as tk
+""" import tkinter as tk
 from tkinter import ttk
 
 def login():
@@ -80,5 +80,60 @@ access_level_dropdown.current(0)
 # Login button
 login_button = ttk.Button(login_frame, text="Login", command=login)
 login_button.grid(row=3, columnspan=2, pady=10)
+
+root.mainloop() """
+
+
+
+import tkinter as tk
+from tkinter import ttk
+
+def populate_table():
+    # Clear existing items in the Treeview
+    for record in tree.get_children():
+        tree.delete(record)
+    
+    # Retrieve records from the database (replace this with your database logic)
+    records = [
+        ("1", "John", "Doe"),
+        ("2", "Jane", "Smith"),
+        # Add more records as needed
+    ]
+    
+    # Populate the Treeview with database records
+    for record in records:
+        tree.insert("", "end", values=record)
+
+# Create Tkinter window
+root = tk.Tk()
+root.title("Database Records")
+
+# Create Frame for organizing layout
+frame = ttk.Frame(root)
+frame.pack(fill="both", expand=True)
+
+# Create Treeview widget for displaying database records
+tree = ttk.Treeview(frame, columns=("ID", "First Name", "Last Name"), show="headings")
+tree.heading("ID", text="ID")
+tree.heading("First Name", text="First Name")
+tree.heading("Last Name", text="Last Name")
+tree.pack(fill="both", expand=True)
+
+# Create and pack vertical scrollbar
+scrollbar_y = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
+scrollbar_y.pack(side="right", fill="y")
+tree.configure(yscrollcommand=scrollbar_y.set)
+
+# Create and pack horizontal scrollbar
+scrollbar_x = ttk.Scrollbar(frame, orient="horizontal", command=tree.xview)
+scrollbar_x.pack(side="bottom", fill="x")
+tree.configure(xscrollcommand=scrollbar_x.set)
+
+# Populate the table with database records
+populate_table()
+
+# Button to refresh table with latest records
+refresh_button = ttk.Button(root, text="Refresh", command=populate_table)
+refresh_button.pack()
 
 root.mainloop()
