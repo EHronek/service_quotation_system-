@@ -85,7 +85,7 @@ root.mainloop() """
 
 
 
-import tkinter as tk
+""" import tkinter as tk
 from tkinter import ttk
 
 def populate_table():
@@ -137,3 +137,33 @@ refresh_button = ttk.Button(root, text="Refresh", command=populate_table)
 refresh_button.pack()
 
 root.mainloop()
+ """
+
+
+import tkinter as tk
+import calendar
+
+class CalendarApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Calendar App")
+        
+        self.calendar_label = tk.Label(self, text="", font=("Arial", 12))
+        self.calendar_label.pack(pady=20)
+        
+        self.update_calendar()
+        
+    def update_calendar(self):
+        # Get the current year and month
+        year = self.year
+        month = self.month
+        
+        # Generate the calendar for the specified year and month
+        cal_data = calendar.month(year, month)
+        
+        # Update the label with the calendar data
+        self.calendar_label.config(text=cal_data)
+        
+if __name__ == "__main__":
+    app = CalendarApp()
+    app.mainloop()

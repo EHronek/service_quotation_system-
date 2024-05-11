@@ -14,7 +14,7 @@ Main_panel_tab = tk.Frame(notebook)
 Application_reg_tab = tk.Frame(notebook)
 
 notebook.add(Main_panel_tab, text="Main access Panel")
-notebook.add(Application_reg_tab, text="Application regeistration")
+notebook.add(Application_reg_tab, text="Application registration")
 notebook.pack(expand=True, fill="both")
 
 
@@ -30,7 +30,7 @@ company_finances_tab = tk.Frame(notebook2)
 user_account_setting_tab = tk.Frame(notebook2)
 Database_setting_tab = tk.Frame(notebook2)
 
-notebook2.add(quotation_tab, text="Service Quations")
+notebook2.add(quotation_tab, text="Service Quotations")
 notebook2.add(registration_tab, text="Client Registration")
 notebook2.add(client_details_tab, text="Client Details")
 notebook2.add(project_update_tab, text="Project update")
@@ -414,6 +414,105 @@ def quotation():
 
 
 quotation()
+
+
+def client_registration():
+    client_reg_frame = tk.Frame(registration_tab)
+    client_reg_frame.pack(side="top")
+
+    tk.Label(client_reg_frame, text="CONFIRM CLIENT REGISTRATION BELOW").grid(row=0, column=3, pady=20)
+    tk.Label(client_reg_frame, text="Enter quotation number to load").grid(row=2, column=0)
+    tk.Label(client_reg_frame, text="Client id:").grid(row=4, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Client name:").grid(row=5, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Application Type:").grid(row=6, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Project title:").grid(row=7, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Project cost:").grid(row=8, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Contact:").grid(row=9, column=0, padx=3, pady=3)
+    tk.Label(client_reg_frame, text="Email:").grid(row=10, column=0, padx=3, pady=3)
+
+
+    #creating entry field for client details
+    load_entry = tk.Entry(client_reg_frame, width=50)
+    load_entry.grid(row=3, column=0,pady=25)
+
+    load_button = tk.Button(client_reg_frame, text="Load details")
+    load_button.grid(row=3, column=1)
+
+    client_id_entry = tk.Entry(client_reg_frame, width=50)
+    client_id_entry.grid(row=4, column=1, padx=3, pady=3)
+    client_name_entry = tk.Entry(client_reg_frame, width=50)
+    client_name_entry.grid(row=5, column=1, padx=3, pady=3)
+    app_type_entry = tk.Entry(client_reg_frame, width=50)
+    app_type_entry.grid(row=6, column=1, padx=3, pady=3)
+    project_title_entry = tk.Entry(client_reg_frame, width=50)
+    project_title_entry.grid(row=7, column=1, padx=3, pady=3)
+    project_cost_entry = tk.Entry(client_reg_frame, width=50)
+    project_cost_entry.grid(row=8, column=1, padx=3, pady=3)
+    client_contact_entry = tk.Entry(client_reg_frame, width=50)
+    client_contact_entry.grid(row=9, column=1, padx=3, pady=3)
+    client_email_entry = tk.Entry(client_reg_frame, width=50)
+    client_email_entry.grid(row=10, column=1, padx=3, pady=3)
+
+    confirm_reg_button = tk.Button(client_reg_frame, text="Confirm registration", width=20)
+    confirm_reg_button.grid(row=10, column=4, pady=5)
+
+    #CREATE A CALENDER DATE PICKER : REM
+
+    # creating table to show the details of clients registered in tables
+    # creating table to show the details of clients registered in tables
+    client_table_frame = tk.Frame(registration_tab)
+    client_table_frame.pack(side='bottom')
+
+    client_tree = ttk.Treeview(client_table_frame)
+    client_tree["columns"] = ("Client_id", 
+                            "Client_name", 
+                            "Contact", 
+                            "Email", 
+                            "Application_type", 
+                            "Project_title", 
+                            "Project_cost", 
+                            "Project_deadline", 
+                            "Project_status", 
+                            "Development_status",  # Fixed typo here
+                            "Registration_date")  # Fixed typo here
+
+    client_tree.column("#0", width=0, stretch=tk.NO)
+    client_tree.column("Client_id", anchor=tk.W, width=100)
+    client_tree.column("Client_name", anchor=tk.W, width=100)
+    client_tree.column("Contact", anchor=tk.W, width=100)
+    client_tree.column("Email", anchor=tk.W, width=100)
+    client_tree.column("Application_type", anchor=tk.W, width=100)
+    client_tree.column("Project_title", anchor=tk.W, width=100)
+    client_tree.column("Project_cost", anchor=tk.W, width=100)
+    client_tree.column("Project_deadline", anchor=tk.W, width=100)
+    client_tree.column("Project_status", anchor=tk.W, width=100)
+    client_tree.column("Development_status", anchor=tk.W, width=100)  # Fixed typo here
+    client_tree.column("Registration_date", anchor=tk.W, width=100)
+
+    client_tree.heading("#0", text="", anchor=tk.W)
+    client_tree.heading("Client_id", text="Client_id", anchor=tk.W)
+    client_tree.heading("Client_name", text="Client_name", anchor=tk.W)
+    client_tree.heading("Contact", text="Contact", anchor=tk.W)
+    client_tree.heading("Email", text="Email", anchor=tk.W)
+    client_tree.heading("Application_type", text="Application_type", anchor=tk.W)  # Added anchor
+    client_tree.heading("Project_title", text="Project_title", anchor=tk.W)
+    client_tree.heading("Project_cost", text="Project_cost", anchor=tk.W)
+    client_tree.heading("Project_deadline", text="Project_deadline", anchor=tk.W)  # Fixed typo here
+    client_tree.heading("Project_status", text="Project_status", anchor=tk.W)
+    client_tree.heading("Development_status", text="Development_status", anchor=tk.W)
+    client_tree.heading("Registration_date", text="Registration_date", anchor=tk.W)
+
+    client_tree.pack()
+
+
+
+client_registration()
+
+
+# CLIENT REGISTRATION SECTION
+
+
+
 
 emp_frame = tk.Frame(employee_reg_tab, bg="#5b93a6")
 emp_frame.pack()
