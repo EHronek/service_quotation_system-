@@ -255,15 +255,15 @@ def quotation():
     service_cost.grid(row=6, column=1, pady=5)
 
     # creating a table that show details of the quotations created
-    quote_table_frame = tk.Frame(create_quote_tab)
-    quote_table_frame.pack(side="right")
+    edit_quote_table_frame = tk.Frame(create_quote_tab)
+    edit_quote_table_frame.pack(side="right")
 
     #create quotation button
-    create_quote_button = tk.Button(quote_table_frame, text="Create quotation")
-    create_quote_button.pack(side='top', pady=20, padx=20)
+    update_quote_button = tk.Button(edit_quote_table_frame, text="Create quotation")
+    update_quote_button.pack(side='top', pady=20, padx=20)
 
 
-    quote_tree = ttk.Treeview(quote_table_frame)
+    quote_tree = ttk.Treeview(edit_quote_table_frame)
 
     quote_tree['columns'] = ("quotation_number", "client_name","service_description")
     quote_tree.column("#0", width=0, stretch=tk.NO)
@@ -276,8 +276,72 @@ def quotation():
     quote_tree.heading("client_name", text="client_name", anchor=tk.W)
     quote_tree.heading("service_description", text="service_description", anchor=tk.W)
 
-    quote_tree.pack()
 
+
+
+
+    edit_quote_frame = tk.Frame(view_quote_tab)
+    edit_quote_frame.pack(side="left")
+
+    #creating labals and Entries for the new quotation
+    #tk.Label(edit_quote_frame, text="CREATE NEW QUOTATION BELOW").pack(side='top')
+    tk.Label(edit_quote_frame, text="Quotation number").grid(row=0, column=0, pady=5)
+    tk.Label(edit_quote_frame, text="Client name").grid(row=1, column=0, pady=5)
+    tk.Label(edit_quote_frame, text="Client contact").grid(row=2, column=0, pady=5)
+    tk.Label(edit_quote_frame, text="Client email").grid(row=3, column=0, pady=5)
+    tk.Label(edit_quote_frame, text="Application type").grid(row=4, column=0, pady=5)
+
+    quote_num_entry = tk.Entry(edit_quote_frame, width =30)
+    quote_num_entry.grid(row=0, column=1, pady=5)
+    client_name_entry = tk.Entry(edit_quote_frame, width=30)
+    client_name_entry.grid(row=1, column=1, pady=5)
+    client_contact_entry = tk.Entry(edit_quote_frame, width=30)
+    client_contact_entry.grid(row=2, column=1, pady=5)
+    client_email_entry = tk.Entry(edit_quote_frame, width=30)
+    client_email_entry.grid(row=3, column=1, pady=5)
+    
+    #drop down for the application type
+    app_types = ["Select application type" ,"Desktop Application", "Web Application", "Web (Static)", "Website (Dynamic)", "Mobile Application"]
+    app_type_combo = ttk.Combobox(edit_quote_frame, value=app_types)
+    app_type_combo.current(0)
+    app_type_combo.bind("<<ComboboxSelected>>")
+    app_type_combo.grid(row=4, column=1, pady=5)
+
+    # Creating a text area for service description
+    service_description = tk.Text(edit_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
+    service_description.grid(row=5, column=0, columnspan=3)
+
+    tk.Label(edit_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
+    service_cost = tk.Entry(edit_quote_frame, width=30)
+    service_cost.grid(row=6, column=1, pady=5)
+
+    # creating a table that show details of the quotations created
+    edit_quote_table_frame = tk.Frame(view_quote_tab)
+    edit_quote_table_frame.pack(side="right")
+
+    #create quotation button
+    update_quote_button = tk.Button(edit_quote_table_frame, text="Update quotation")
+    update_quote_button.pack(side='top', pady=20, padx=20)
+
+
+    edit_quote_tree = ttk.Treeview(edit_quote_table_frame)
+
+    edit_quote_tree['columns'] = ("quotation_number", "client_name","service_description", "status")
+    edit_quote_tree.column("#0", width=0, stretch=tk.NO)
+    edit_quote_tree.column("quotation_number", anchor=tk.W, width=150)
+    edit_quote_tree.column("client_name", anchor=tk.W, width=150)
+    edit_quote_tree.column("service_description", anchor=tk.W, width=150)
+    edit_quote_tree.column("status", anchor=tk.W, width=150)
+
+    edit_quote_tree.heading("#0", text='', anchor=tk.W)
+    edit_quote_tree.heading("quotation_number", text="quotation_number", anchor=tk.W)
+    edit_quote_tree.heading("client_name", text="client_name", anchor=tk.W)
+    edit_quote_tree.heading("service_description", text="service_description", anchor=tk.W)
+    edit_quote_tree.heading("status", text="status",anchor=tk.W)
+
+
+    quote_tree.pack()
+    edit_quote_tree.pack()
 
 
 quotation()
