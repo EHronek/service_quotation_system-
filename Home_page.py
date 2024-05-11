@@ -512,7 +512,63 @@ client_registration()
 # CLIENT REGISTRATION SECTION
 
 
+def client_details():
+    client_details_frame = tk.Frame(client_details_tab)
+    client_details_frame.pack(side='top')
 
+    tk.Label(client_details_frame, text="VIEW AND UPDATE CLIENT DETAILS BELOW").grid(pady=30, padx=30)
+    tk.Label(client_details_frame, text="Enter clients id to load: ").grid(row=1, column=0, pady=20)
+
+    load_entry = tk.Entry(client_details_frame, width=50)
+    load_entry.grid(row=1, column=1, pady=20)
+
+    #creating labels for client details
+    tk.Label(client_details_frame, text="Client details").grid(row=2,column=0)
+    tk.Label(client_details_frame, text="Client name").grid(row=4, column=0)
+    tk.Label(client_details_frame, text="Contact").grid(row=6, column=0)
+    tk.Label(client_details_frame, text="Email").grid(row=8, column=0)
+
+    #creating entries for client details
+    client_id_entry = tk.Entry(client_details_frame,width= 50)
+    client_id_entry.grid(row=3, column=0)
+
+    client_name_entry = tk.Entry(client_details_frame,width= 50)
+    client_name_entry.grid(row=5, column=0)
+
+    client_contact_entry = tk.Entry(client_details_frame,width= 50)
+    client_contact_entry.grid(row=7, column=0)
+
+    client_email_entry = tk.Entry(client_details_frame,width= 50)
+    client_email_entry.grid(row=9, column=0)
+
+    update_client_button = tk.Button(client_details_frame, text="Update details")
+    update_client_button.grid(row=8 , column=1, pady=3)
+    delete_client_button = tk.Button(client_details_frame, text="Delete Client")
+    delete_client_button.grid(row=9, column=1, pady=2)
+    
+
+    #Create a table for clients to view
+    client_table_frame = tk.Frame(client_details_tab)
+    client_table_frame.pack(side='bottom')
+
+    client_table = ttk.Treeview(client_table_frame)
+    client_table["columns"] = ("client_id", "client_name", "contact", "email")
+    client_table.column("#0", stretch=tk.NO, width=0)
+    client_table.column("client_id", anchor=tk.W, width=100)
+    client_table.column("client_name", anchor=tk.W, width=100)
+    client_table.column("contact", anchor="w", width=100)
+    client_table.column("email", anchor=tk.W, width=100)
+
+    client_table.heading("#0", text="", anchor=tk.W)
+    client_table.heading("client_id", text="client_name", anchor=tk.W)
+    client_table.heading("client_name", text="client_name", anchor="w")
+    client_table.heading("contact", text="contact", anchor=tk.W)
+    client_table.heading("email", text="email", anchor=tk.W)
+
+    client_table.pack()
+
+
+client_details()
 
 emp_frame = tk.Frame(employee_reg_tab, bg="#5b93a6")
 emp_frame.pack()
