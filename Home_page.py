@@ -660,7 +660,185 @@ def project_update():
 
     project_update_table.pack()
 
-project_update()    
+project_update()
+
+
+def database_setup_form():
+    database_setup_frame = tk.Frame(Database_setting_tab)
+    database_setup_frame.pack()
+
+    #creating database labels
+    tk.Label(database_setup_frame, text="Server Address").grid(row=0, column=0,pady=5, padx=5)
+    tk.Label(database_setup_frame, text="Port Number").grid(row=2, column=0,pady=5, padx=5)
+    tk.Label(database_setup_frame, text="Database Name").grid(row=4, column=0, pady=5, padx=5)
+    tk.Label(database_setup_frame, text="Database Id").grid(row=6, column=0, pady=5, padx=5)
+    tk.Label(database_setup_frame, text="Database Password").grid(row=8, column=0, pady=5, padx=5)
+    
+    # creating entries for database connection
+    server_address_entry = tk.Entry(database_setup_frame, width =30)
+    server_address_entry.grid(row=1, column=0)
+    port_num_entry = tk.Entry(database_setup_frame, width=30)
+    port_num_entry.grid(row=3, column=0)
+    db_name_entry = tk.Entry(database_setup_frame, width=30)
+    db_name_entry.grid(row=5, column=0)
+    db_id_entry = tk.Entry(database_setup_frame, width=30)
+    db_id_entry.grid(row=7, column=0)
+    db_password_entry = tk.Entry(database_setup_frame, width=30)
+    db_password_entry.grid(row=9, column=0)
+
+    #creating buttons
+    test_db_conn_button = tk.Button(database_setup_frame, text="Test Database connection")
+    test_db_conn_button.grid(row=10, column=0, pady=10)
+
+    save_db_conn_button = tk.Button(database_setup_frame, text="Save Connection Settings")
+    save_db_conn_button.grid(row=11, column=0)
+
+    clear_button = tk.Button(database_setup_frame, text="Clear Fields")
+    clear_button.grid(row=12, column=0,pady=10)
+
+database_setup_form()
+
+
+def client_finance():
+    client_finance_notebook = ttk.Notebook(client_finances_tab)
+
+    client_payment_tab = tk.Frame(client_finance_notebook)
+    client_balance_tab = tk.Frame(client_finance_notebook)
+    client_receipt_tab = tk.Frame(client_finance_notebook)
+
+    client_finance_notebook.add(client_payment_tab, text="Client Payment Records")
+    client_finance_notebook.add(client_balance_tab, text="Development balance")
+    client_finance_notebook.add(client_receipt_tab, text="Client receipts")
+
+    client_finance_notebook.pack(expand=True, fill='both')
+
+
+    client_payment_frame = tk.Frame(client_payment_tab)
+    client_payment_frame.pack(side='top')
+
+    client_payment_frame2 = tk.Frame(client_payment_tab)
+    client_payment_frame2.pack(side='bottom')
+
+    tk.Label(client_payment_frame, text="RECORD CLIENT PAYMENT BELOW").grid(row=0, column=1, pady=10)
+    tk.Label(client_payment_frame, text="Enter client id to load:").grid(row=1, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Transaction id:"). grid(row=2, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Client id:").grid(row=3, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Client Name:").grid(row=4, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Email:").grid(row=5, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Paid (Ksh):").grid(row=6, column=0,pady=3)
+    tk.Label(client_payment_frame, text="Payment mode:").grid(row=7, column=0,pady=3)
+
+    #creating entries related to client payments
+    load_payment_entry = tk.Entry(client_payment_frame, width=40)
+    load_payment_entry.grid(row=1, column=1,pady=3)
+    transaction_id_entry = tk.Entry(client_payment_frame, width=40)
+    transaction_id_entry.grid(row=2, column=1,pady=3)
+    client_id_entry = tk.Entry(client_payment_frame, width=40)
+    client_id_entry.grid(row=3, column=1,pady=3)
+    client_name_entry = tk.Entry(client_payment_frame, width=40)
+    client_name_entry.grid(row=4, column=1,pady=3)
+    client_email_entry = tk.Entry(client_payment_frame, width=40)
+    client_email_entry.grid(row=5, column=1,pady=3)
+    client_paid_entry = tk.Entry(client_payment_frame, width=40)
+    client_paid_entry.grid(row=6, column=1,pady=3)
+
+
+
+    #creating a drop down/combo for payment mode
+    payment_mode = ["Selected value", "Cash payment", "Mobile payment"]
+
+    payment_mode_combo = ttk.Combobox(client_payment_frame, values=payment_mode)
+    payment_mode_combo.current(0)
+    payment_mode_combo.bind("<<ComboboxSelected>>")
+    payment_mode_combo.grid(row=7,column=1)
+
+
+    #create a client payments table to view
+    client_payment_frame2 = tk.Frame(client_payment_tab)
+    client_payment_frame2.pack(side='bottom')
+
+    client_trans_table = ttk.Treeview(client_payment_frame2)
+    client_trans_table["columns"] = ("transaction_id",
+                                     "client_id",
+                                     "client_name",
+                                     "email",
+                                     "amount_paid",
+                                     "payment_mode",
+                                     "payment_date")
+    
+    client_trans_table.column("#0", stretch=tk.NO, width=0)
+    client_trans_table.column("client_id", anchor=tk.CENTER,  width=100)
+    client_trans_table.column("client_name", anchor=tk.CENTER,  width=100)
+    client_trans_table.column("email",  anchor=tk.CENTER, width=100)
+    client_trans_table.column("amount_paid", anchor=tk.CENTER, width=100)
+    client_trans_table.column("payment_mode", anchor=tk.CENTER, width=100)
+    client_trans_table.column("payment_date", anchor=tk.CENTER, width=100)
+
+    client_trans_table.heading("#0", text="", anchor=tk.W)
+    client_trans_table.heading("client_id", text="Client Id", anchor=tk.W)
+    client_trans_table.heading("client_name", text="Client name", anchor=tk.W)
+    client_trans_table.heading("email", text="Email", anchor=tk.W)
+    client_trans_table.heading("amount_paid", text="Amount paid", anchor=tk.W)
+    client_trans_table.heading("payment_mode", text="Payment mode", anchor=tk.W)
+    client_trans_table.heading("payment_date", text="Payement date", anchor=tk.W)
+
+    client_trans_table.pack()
+
+
+client_finance()
+
+
+#user account setting design
+def user_account_setting():
+    user_account_frame1 = tk.Frame(user_account_setting_tab, width=300, height=100)
+    user_account_frame1.pack(side="top", expand=True)
+
+    tk.Label(user_account_frame1, text="USER ACCOUNT REGISTRATION AND UPDATE").grid(row=0, column=1, pady=10)
+    tk.Label(user_account_frame1, text="Enter employee id to load:").grid(row=1, column=0,pady=3)
+    tk.Label(user_account_frame1, text="Full Name:"). grid(row=2, column=0,pady=3)
+    tk.Label(user_account_frame1, text="Usernaame:").grid(row=3, column=0,pady=3)
+    tk.Label(user_account_frame1, text="User id:").grid(row=4, column=0,pady=3)
+    tk.Label(user_account_frame1, text="Password:").grid(row=5, column=0,pady=3)
+    tk.Label(user_account_frame1, text="Access level:").grid(row=6, column=0,pady=3)
+
+    load_emp_entry = tk.Entry(user_account_frame1, width=40)
+    load_emp_entry.grid(row=1, column=1,pady=3)
+    user_fullname_entry = tk.Entry(user_account_frame1, width=40)
+    user_fullname_entry.grid(row=2, column=1,pady=3)
+    username_entry = tk.Entry(user_account_frame1, width=40)
+    username_entry.grid(row=3, column=1,pady=3)
+    user_id_entry = tk.Entry(user_account_frame1, width=40)
+    user_id_entry.grid(row=4, column=1,pady=3)
+    password_entry = tk.Entry(user_account_frame1, width=40)
+    password_entry.grid(row=5, column=1,pady=3)
+    accesslevel_entry = tk.Entry(user_account_frame1, width=40)
+    accesslevel_entry.grid(row=6, column=1,pady=3)
+
+
+
+    #creating a drop down/combo for payment mode
+    access_level = ["Selected value", "Administrator", "User"]
+
+    accesslevel_combo = ttk.Combobox(user_account_frame1, values=access_level)
+    accesslevel_combo.current(0)
+    accesslevel_combo.bind("<<ComboboxSelected>>")
+    accesslevel_combo.grid(row=7,column=1)
+
+    
+
+
+
+
+    user_account_frame2 = tk.Frame(user_account_setting_tab, width=300, height=100)
+    user_account_frame2.pack(side="bottom", expand=True)
+
+    user_account_frame3 = tk.Frame(user_account_setting_tab, width=300, height=100)
+    user_account_frame3.pack(side='right', expand=True)
+
+
+
+
+user_account_setting()
 
 emp_frame = tk.Frame(employee_reg_tab, bg="#5b93a6")
 emp_frame.pack()
