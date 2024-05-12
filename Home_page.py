@@ -570,6 +570,98 @@ def client_details():
 
 client_details()
 
+
+def project_update():
+    project_update_frame = tk.Frame(project_update_tab)
+    project_update_frame.pack(side='top')
+
+    tk.Label(project_update_frame, text="PROJECT STATUS UPDATE").grid(row=0, padx=40)
+
+    tk.Label(project_update_frame, text="Enter client ID to load related details").grid(row=1,column=0)
+    #create a load entry
+    load_client_entry = tk.Entry(project_update_frame, width=40)
+    load_client_entry.grid(row=2, column=0, pady=20)
+    #create load button
+    load_client_button = tk.Button(project_update_frame, text="Load details")
+    load_client_button.grid(row=2, column=1)
+
+    tk.Label(project_update_frame, text="Client Id:").grid(row=3, column=0, pady=3)
+    tk.Label(project_update_frame, text="Client name:").grid(row=4, column=0, pady=3)
+    tk.Label(project_update_frame, text="Contact:"). grid(row=5, column=0, pady=3)
+    tk.Label(project_update_frame, text="Email:").grid(row=6, column=0, pady=3)
+    tk.Label(project_update_frame, text="Select new project phase below").grid(row=7, column=1, pady=10)
+
+    #creating entries for clients details
+    client_id_entry = tk.Entry(project_update_frame, width=30)
+    client_id_entry.grid(row=3, column=1)
+    client_name_entry = tk.Entry(project_update_frame, width=30)
+    client_name_entry.grid(row=4, column=1)
+    client_contact_entry = tk.Entry(project_update_frame, width=30)
+    client_contact_entry.grid(row=5, column=1)
+    client_email_entry = tk.Entry(project_update_frame, width=30)
+    client_email_entry.grid(row=6, column=1)
+
+    #create dropdown/combo for selct New Project phase
+    project_phase = ["Select New Project Phase", 
+                     "Development Phase", 
+                     "Testing and documenetation Phase", 
+                     "On Hold",
+                     "Completed",
+                     "Cancelled",
+                     "Delivered"
+    ]
+    new_phase_dropdown = ttk.Combobox(project_update_frame, values=project_phase, width=30)
+    new_phase_dropdown.current(0)
+    new_phase_dropdown.bind("<<ComboboxSelected>>")
+    new_phase_dropdown.grid(row=8, column=1)
+
+    #create a Text area and buttons for update and email
+    #project_update_textarea = tk.Text(project_update_frame)
+    #project_update_textarea.grid(pady=2)
+    project_update_button = tk.Button(project_update_frame, text="Update details")
+    project_update_button.grid(row=8, column =5, padx=5)
+
+    #Creating second frame for table in project_update_tab
+    project_update_frame2 = tk.Frame(project_update_tab)
+    project_update_frame2.pack(side='bottom')
+
+    project_update_table = ttk.Treeview(project_update_frame2)
+    
+    project_update_table['columns'] = ("client_id", 
+                                       "client_name", 
+                                       "contact", 
+                                       "email", 
+                                       "project_title", 
+                                       "project_cost", 
+                                       "project_deadline", 
+                                       "project_status", 
+                                       "development_status")
+    project_update_table.column("#0", stretch=tk.NO, width=0)
+    project_update_table.column("client_id", anchor=tk.CENTER, width=100)
+    project_update_table.column("client_name", anchor=tk.CENTER, width=100)
+    project_update_table.column("contact", anchor=tk.CENTER, width=100)
+    project_update_table.column("email", anchor=tk.CENTER, width=100)
+    project_update_table.column("project_title", anchor=tk.CENTER, width=100)
+    project_update_table.column("project_cost", anchor=tk.CENTER, width=100)
+    project_update_table.column("project_deadline", anchor=tk.CENTER, width=100)
+    project_update_table.column("project_status", anchor=tk.CENTER, width=100)
+    project_update_table.column("development_status", anchor=tk.CENTER, width=100)
+
+    project_update_table.heading("#0", text="", anchor=tk.W)
+    project_update_table.heading("client_id", text="Client id", anchor=tk.W)
+    project_update_table.heading("client_name", text="Client name", anchor=tk.W)
+    project_update_table.heading("contact", text="Contact", anchor=tk.W)
+    project_update_table.heading("email", text="email", anchor=tk.W)
+    project_update_table.heading("project_title", text="Project title", anchor=tk.W)
+    project_update_table.heading("project_cost", text="Project cost", anchor=tk.W)
+    project_update_table.heading("project_deadline", text="Project deadline", anchor=tk.W)
+    project_update_table.heading("project_status", text="Project status", anchor=tk.W)
+    project_update_table.heading("development_status", text="Development Status", anchor=tk.W)
+
+    project_update_table.pack()
+
+project_update()    
+
 emp_frame = tk.Frame(employee_reg_tab, bg="#5b93a6")
 emp_frame.pack()
 
