@@ -1,22 +1,22 @@
-from sqlalchemy.orm import declarative_base, relationship
+""" from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 
 Base = declarative_base()
 
 class Client(Base):
-    """Client class that represents a table in the database"""
+    '''Client class that represents a table in the database'''
     __tablename__ = "client_tb"
 
-    client_id = Column('client_id', String, primary_key=True)
-    client_name = Column("client_name", String)
-    contact = Column("contact", Integer)
-    email = Column("email", String)
-    application_type = Column("application_type", String)
-    project_title = Column("project_title", String)
-    project_cost = Column("project_cost", Integer)
-    project_deadline = Column("project_deadline", DateTime)
-    project_status = Column("project_status", String)
-    development_status = Column("development_status", String)
+    client_id = Column(String(100), primary_key=True)
+    client_name = Column(String(100))
+    contact = Column(Integer)
+    email = Column(String(100))
+    application_type = Column(String(100))
+    project_title = Column(String(100))
+    project_cost = Column(Integer)
+    project_deadline = Column(DateTime)
+    project_status = Column(String(100))
+    development_status = Column(String(100))
 
     # Establish relationship with Quotation
     quotations = relationship("Quotation", back_populates="client")
@@ -26,17 +26,17 @@ class Client(Base):
 class Quotation(Base):
     __tablename__ = "quotation_tb"
 
-    quotation_number = Column("quotation_number", String, primary_key=True)
-    client_id = Column(String, ForeignKey('client_tb.client_id'))
-    client_name = Column("client_name", String)
-    contact = Column("contact", Integer)
-    client_email = Column("client_email", String)
-    application_type = Column("application_type", String)
-    service_name = Column("service_name", String)
-    service_description = Column("service_description", String)
-    service_cost = Column("service_cost", Integer)
-    quotation_date = Column("quotation_date", DateTime)
-    status = Column("status", String)
+    quotation_number = Column(String(100), primary_key=True)
+    client_id = Column(String(100), ForeignKey('client_tb.client_id'))
+    client_name = Column(String(100))
+    contact = Column(Integer)
+    client_email = Column(String(100))
+    application_type = Column(String(100))
+    service_name = Column(String(100))
+    service_description = Column(String(100))
+    service_cost = Column(Integer)
+    quotation_date = Column(DateTime)
+    status = Column(String(100))
 
     # Establish relationship with Client
     client = relationship("Client", back_populates="quotations")
@@ -45,35 +45,35 @@ class Quotation(Base):
 class User(Base):
     __tablename__ = "user_tb"
 
-    user_id = Column("user_id", String, primary_key=True)
-    fullname = Column("fullname", String)
-    username = Column("username", String)
-    user_password = Column("user_password", String)
-    access_level = Column("access_level", String)
-    security_code = Column("security_code", String)
+    user_id = Column( String(100), primary_key=True)
+    fullname = Column(String(100))
+    username = Column(String(100))
+    user_password = Column(String(100))
+    access_level = Column(String(100))
+    security_code = Column(String(100))
 
 
 class Organization(Base):
     __tablename__ = "organization_tb"
 
-    organization_id = Column("organization_id", String, primary_key=True)
-    organization_name = Column("organization_name", String)
-    organization_contact = Column("organization_contact", Integer)
-    location = Column("location", String)
-    organization_email = Column("organization_email", String)
-    email_password = Column("email_password", String)
+    organization_id = Column(String(100), primary_key=True)
+    organization_name = Column(String(100))
+    organization_contact = Column(Integer)
+    location = Column(String(100))
+    organization_email = Column(String(100))
+    email_password = Column(String(100))
 
 
 class Finance(Base):
     __tablename__ = "finance_tb"
 
-    transaction_id = Column("transaction_id", String, primary_key=True)
-    client_id = Column(String, ForeignKey('client_tb.client_id'))
-    client_name = Column("client_name", String)
-    client_email = Column("client_email", String)
-    amount = Column("amount", Integer)
-    payment_mode = Column("payment_mode", String)
-    payment_date = Column("payment_date", DateTime)
+    transaction_id = Column(String(100), primary_key=True)
+    client_id = Column(String(100), ForeignKey('client_tb.client_id'))
+    client_name = Column(String(100))
+    client_email = Column(String(100))
+    amount = Column(Integer)
+    payment_mode = Column(String(100))
+    payment_date = Column(DateTime)
 
     # Establish relationship with Client
     client = relationship("Client", back_populates="finances")
@@ -82,43 +82,169 @@ class Finance(Base):
 class Payment(Base):
     __tablename__ = "payment_tb"
 
-    transaction_id = Column("transaction_id", String, primary_key=True)
-    expenditure_type = Column("expenditure_type", String)
-    paid_to = Column("paid_to", String)
-    contact = Column("contact", Integer)
-    email = Column("email", String)
-    total_paid = Column("total_paid", Integer)
-    transaction_mode = Column("transaction_mode", String)
-    transaction_cost = Column("transaction_cost", Integer)
-    total_spent = Column("total_spent", Integer)
-    processed_date = Column("processed_date", DateTime)
+    transaction_id = Column(String(100), primary_key=True)
+    expenditure_type = Column(String(100))
+    paid_to = Column(String(100))
+    contact = Column(Integer)
+    email = Column(String(100))
+    total_paid = Column( Integer)
+    transaction_mode = Column(String(100))
+    transaction_cost = Column(Integer)
+    total_spent = Column(Integer)
+    processed_date = Column(DateTime)
 
 
 class AssetExpenditure(Base):
     __tablename__ = "asset_expenditure_tb"
     
-    record_id = Column("record_id", Integer, primary_key=True)
-    asset_name = Column("asset_name", String)
-    asset_cost = Column("asset_cost", Integer)
-    quantity = Column("quantity", Integer)
-    total_cost = Column("total_cost", Integer)
-    purchase_date = Column("purchase_date", DateTime)
+    record_id = Column(Integer, primary_key=True)
+    asset_name = Column(String(100))
+    asset_cost = Column(Integer)
+    quantity = Column(Integer)
+    total_cost = Column(Integer)
+    purchase_date = Column(DateTime)
 
 
 class AssetTemporary(Base):
     __tablename__ = "asset_temporary_tb"
 
-    record_id = Column('record_id', Integer, primary_key=True)
-    asset_name = Column('asset_name', String)
-    asset_cost = Column('asset_cost', Integer)
-    quantity = Column('quantity', Integer)
-    total_cost = Column('total_cost', Integer)
-    purchase_date = Column('purchase_date', DateTime)
+    record_id = Column(Integer, primary_key=True)
+    asset_name = Column(String(100))
+    asset_cost = Column(Integer)
+    quantity = Column(Integer)
+    total_cost = Column(Integer)
+    purchase_date = Column(DateTime)
 
 
 class Deposit(Base):
     __tablename__ = "deposit_tb"
 
-    transaction_id = Column('transaction_id', String, primary_key=True)
-    amount = Column('amount', Integer)
-    deposit_date = Column('deposit_date', DateTime)
+    transaction_id = Column(String(100), primary_key=True)
+    amount = Column(Integer)
+    deposit_date = Column(DateTime)
+ """
+
+from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+
+Base = declarative_base()
+
+class Client(Base):
+    """Client class that represents a table in the database"""
+    __tablename__ = "client_tb"
+
+    client_id = Column(String(50), primary_key=True)
+    client_name = Column(String(128))
+    contact = Column(Integer)
+    email = Column(String(128))
+    application_type = Column(String(128))
+    project_title = Column(String(128))
+    project_cost = Column(Integer)
+    project_deadline = Column(DateTime)
+    project_status = Column(String(128))
+    development_status = Column(String(128))
+
+    # Establish relationships with other tables
+    quotations = relationship("Quotation", back_populates="client")
+    finances = relationship("Finance", back_populates="client")
+
+
+class Quotation(Base):
+    __tablename__ = "quotation_tb"
+
+    quotation_number = Column(String(50), primary_key=True)
+    client_id = Column(String(50), ForeignKey('client_tb.client_id'))
+    client_name = Column(String(128))
+    contact = Column(Integer)
+    client_email = Column(String(128))
+    application_type = Column(String(128))
+    service_name = Column(String(128))
+    service_description = Column(String(255))
+    service_cost = Column(Integer)
+    quotation_date = Column(DateTime)
+    status = Column(String(128))
+
+    # Establish relationship with Client
+    client = relationship("Client", back_populates="quotations")
+
+
+class Finance(Base):
+    __tablename__ = "finance_tb"
+
+    transaction_id = Column(String(50), primary_key=True)
+    client_id = Column(String(50), ForeignKey('client_tb.client_id'))
+    client_name = Column(String(128))
+    client_email = Column(String(128))
+    amount = Column(Integer)
+    payment_mode = Column(String(50))
+    payment_date = Column(DateTime)
+
+    # Establish relationship with Client
+    client = relationship("Client", back_populates="finances")
+
+
+class User(Base):
+    __tablename__ = "user_tb"
+
+    user_id = Column(String(50), primary_key=True)
+    fullname = Column(String(128))
+    username = Column(String(128))
+    user_password = Column(String(128))
+    access_level = Column(String(50))
+    security_code = Column(String(50))
+
+
+class Organization(Base):
+    __tablename__ = "organization_tb"
+
+    organization_id = Column(String(50), primary_key=True)
+    organization_name = Column(String(128))
+    organization_contact = Column(Integer)
+    location = Column(String(128))
+    organization_email = Column(String(128))
+    email_password = Column(String(128))
+
+
+class Payment(Base):
+    __tablename__ = "payment_tb"
+
+    transaction_id = Column(String(50), primary_key=True)
+    expenditure_type = Column(String(50))
+    paid_to = Column(String(128))
+    contact = Column(Integer)
+    email = Column(String(128))
+    total_paid = Column(Integer)
+    transaction_mode = Column(String(50))
+    transaction_cost = Column(Integer)
+    total_spent = Column(Integer)
+    processed_date = Column(DateTime)
+
+
+class AssetExpenditure(Base):
+    __tablename__ = "asset_expenditure_tb"
+
+    record_id = Column(Integer, primary_key=True, autoincrement=True)
+    asset_name = Column(String(128))
+    asset_cost = Column(Integer)
+    quantity = Column(Integer)
+    total_cost = Column(Integer)
+    purchase_date = Column(DateTime)
+
+
+class AssetTemporary(Base):
+    __tablename__ = "asset_temporary_tb"
+
+    record_id = Column(Integer, primary_key=True, autoincrement=True)
+    asset_name = Column(String(128))
+    asset_cost = Column(Integer)
+    quantity = Column(Integer)
+    total_cost = Column(Integer)
+    purchase_date = Column(DateTime)
+
+
+class Deposit(Base):
+    __tablename__ = "deposit_tb"
+
+    transaction_id = Column(String(50), primary_key=True)
+    amount = Column(Integer)
+    deposit_date = Column(DateTime)
