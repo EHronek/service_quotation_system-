@@ -1,8 +1,70 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+#import new_db
+
+#from new_base_model import Base, Client, Quotation, User, Organization, Finance, Payment, AssetExpenditure, AssetTemporary, Deposit
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime
+from new_base_model import *
+#import new_base_model
 
 
 def design():
+
+
+    def save_reg_org():
+        from new_base_model import Base, Organization
+        #establishes a connection with database and saves entry data to db
+        #session = new_db.connection(user, password, database)
+        user = "root"
+        password = "root"
+        database_name = "sysdb"
+
+        engine = create_engine(f'mysql+mysqldb://{user}:{password}@localhost/{database_name}', pool_pre_ping=True)
+        Base.metadata.create_all(engine)  # Create tables based on the Base classes
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        org_name = org_name_entry.get()
+        print(org_name)
+        org_email = org_email_entry.get()
+        print(org_email)
+        org_contact = org_contact_entry.get()
+        print(org_contact)
+        org_location = location_entry.get()
+        print(org_location)
+        email_password = email_password_entry.get()
+        print(email_password)
+        repeat_email_passwd = repeat_password_entry.get()
+        print(repeat_email_passwd)
+
+        if not org_name:
+            org_name = "Hronek System Organization"
+        if not org_contact.isdigit():
+            org_contact = None
+        else:
+            org_contact = int(org_contact)
+        if not org_location:
+            org_location = "Kenya"
+        if not org_email:
+            org_email = "ehronek6608@stu.kemu.ac.ke"
+        if not email_password:
+            messagebox.showerror(title="Pavilion System", message="Error in email password!!!")
+
+        #saving the data to the database for use later on for email
+        org_detail = Organization(organization_id="org_01",organization_name=org_name,organization_contact= org_contact, location=org_location, organization_email=org_email, email_password=email_password)
+
+        try:
+            session.add(org_detail)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            print(f"Error inserting organization: {e}")
+        finally:
+            session.close() 
+        
+
 
     # creating the root window
     home_root = tk.Tk()
@@ -58,6 +120,8 @@ def design():
 
     app_frame = tk.Frame(app_reg_tab)
     app_frame.pack(side=tk.LEFT)
+
+
     #creating labels and entry fields
     tk.Label(app_frame, text="ENTER COMPANY DETAILS").grid(row=0, column=0)
     tk.Label(app_frame, text="Organization Name").grid(row=1, column= 0)
@@ -80,13 +144,13 @@ def design():
     org_email_entry = tk.Entry(app_frame, width=50)
     org_email_entry.grid(row=8, column=0, pady=10, padx=20)
 
-    email_password_entry = tk.Entry(app_frame, show='*', width=50)
+    email_password_entry = tk.Entry(app_frame, width=50)
     email_password_entry.grid(row=10, column=0, pady=10, padx=20)
 
-    repeat_password_entry = tk.Entry(app_frame, show='*', width=50)
+    repeat_password_entry = tk.Entry(app_frame, width=50)
     repeat_password_entry.grid(row=12, column=0, pady=10, padx=20)
 
-    save_register_button = tk.Button(app_frame, text="Save and Register", relief=tk.RAISED)
+    save_register_button = tk.Button(app_frame, text="Save and Register", relief=tk.RAISED, command=save_reg_org)
     save_register_button.grid(row= 13, column =0, pady=10, padx=20)
 
     cancel_button = tk.Button(app_frame, text="Cancel")
@@ -106,26 +170,26 @@ def design():
     tk.Label(app_frame2, text="Repeat Password").grid(row=13, column=0, padx=20)
 
     #creating entry for update company details
-    org_name_entry = tk.Entry(app_frame2, width=25 )
-    org_name_entry.grid(row=0, column=0)
+    upd_org_name_entry = tk.Entry(app_frame2, width=25)
+    upd_org_name_entry.grid(row=0, column=0)
 
-    org_name_entry = tk.Entry(app_frame2, width=50)
-    org_name_entry.grid(row=4, column=0, pady=10, padx=20)
+    upd_org_name_entry = tk.Entry(app_frame2, width=50)
+    upd_org_name_entry.grid(row=4, column=0, pady=10, padx=20)
 
-    org_contact_entry = tk.Entry(app_frame2, width=50)
-    org_contact_entry.grid(row=6, column=0, pady=10, padx=20)
+    upd_org_contact_entry = tk.Entry(app_frame2, width=50)
+    upd_org_contact_entry.grid(row=6, column=0, pady=10, padx=20)
 
-    location_entry = tk.Entry(app_frame2, width=50)
-    location_entry.grid(row=8, column=0, pady=10, padx=20)
+    upd_location_entry = tk.Entry(app_frame2, width=50)
+    upd_location_entry.grid(row=8, column=0, pady=10, padx=20)
 
-    org_email_entry = tk.Entry(app_frame2, width=50)
-    org_email_entry.grid(row=10, column=0, pady=10, padx=20)
+    upd_org_email_entry = tk.Entry(app_frame2, width=50)
+    upd_org_email_entry.grid(row=10, column=0, pady=10, padx=20)
 
-    email_password_entry = tk.Entry(app_frame2, show='*', width=50)
-    email_password_entry.grid(row=12, column=0, pady=10, padx=20)
+    upd_email_password_entry = tk.Entry(app_frame2, show='*', width=50)
+    upd_email_password_entry.grid(row=12, column=0, pady=10, padx=20)
 
-    repeat_password_entry = tk.Entry(app_frame2, show='*', width=50)
-    repeat_password_entry.grid(row=14, column=0, pady=10, padx=20)
+    upd_repeat_password_entry = tk.Entry(app_frame2, show='*', width=50)
+    upd_repeat_password_entry.grid(row=14, column=0, pady=10, padx=20)
 
     load_button = tk.Button(app_frame2, text="Load details")
     load_button.grid(row=0, column=1)
