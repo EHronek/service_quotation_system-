@@ -1,0 +1,1 @@
+from .new_base_model import Base, Client, Quotation, User, Organization, Finance, Payment, AssetExpenditure, AssetTemporary, Deposit
