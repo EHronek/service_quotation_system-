@@ -196,6 +196,14 @@ def design():
         #Takes in employee details and sends to db
         from new_base_model import Employee, Base
         import new_session
+
+        def clear_emp_entry():
+            emp_name_entry.delete(0, tk.END)
+            emp_contact_entry.delete(0, tk.END)
+            emp_id_entry.delete(0, tk.END)
+            emp_email_entry.delete(0, tk.END)
+            emp_role_entry.delete(0, tk.END)
+
         # from new_base_model import Base, Organization
         #establishes a connection with database and saves entry data to db
         #session = new_db.connection(user, password, database)
@@ -205,29 +213,29 @@ def design():
         s = new_session.setup_db(user=user, password=password, database_name=database_name)
 
         emp_name = emp_name_entry.get()    
-        #emp_id_entry = emp_id_entry.get()
+        emp_id = emp_id_entry.get()
         emp_contact= emp_contact_entry.get()
         emp_email = emp_email_entry.get()
         emp_role = emp_role_entry.get()
 
         if not emp_name:
-            clear()
+            clear_emp_entry()
             messagebox.showerror(title="Pavilion system", message="Employee name can't be Null")
-        #if not emp_id:
-           # clear()
-            #messagebox.showerror(title="Pavilion system", message="Employee id can't be Null")
+        if not emp_id:
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee id can't be Null")
         if not int(emp_contact):
-            clear()
+            clear_emp_entry()
             messagebox.showerror(title="Pavilion system", message="Employee Contact can't be Null and is digit")
         
         if not emp_email:
-            clear()
+            clear_emp_entry()
             messagebox.showerror(title="Pavilion system", message="Employee email can't be Null")
         if not emp_role:
-            clear()
+            clear_emp_entry()
             messagebox.showerror(title="Pavilion system", message="Employee role can't be Null")
         else:
-            new_employee = Employee(employee_id=1, 
+            new_employee = Employee(employee_id=emp_id, 
                                     employee_name=emp_name,
                                     employee_contact=emp_contact,
                                     employee_email= emp_email,
@@ -241,6 +249,8 @@ def design():
                 print(f"Something went wrong: {e}")
             finally:
                 s.close()
+                clear_emp_entry()
+        
 
 
 
@@ -324,6 +334,15 @@ def design():
 
     # Designing employee registration section
 
+    def clear_emp_entries():
+        emp_name_entry.delete(0, tk.END)
+        emp_contact_entry.delete(0, tk.END)
+        emp_id_entry.delete(0, tk.END)
+        emp_email_entry.delete(0, tk.END)
+        emp_role_entry.delete(0, tk.END)
+
+
+
     tk.Label(employee_reg_tab, text="REGISTER EMPLOYEE BELOW").pack(side="top")
 
     emp_details_frame = ttk.Frame(employee_reg_tab)
@@ -352,7 +371,7 @@ def design():
     reg_emp_button = tk.Button(emp_details_frame, text="Register employee", command=register_employee)
     reg_emp_button.grid(row=11, column=0, pady=10)
 
-    clear_button = tk.Button(emp_details_frame, text="Clear Fields")
+    clear_button = tk.Button(emp_details_frame, text="Clear Fields", command=clear_emp_entries)
     clear_button.grid(row=12, column=0, pady=10)
 
     update_employee_button = tk.Button(emp_details_frame, text="Update employee details")
@@ -366,6 +385,37 @@ def design():
         emp_table_frame = tk.Frame(employee_reg_tab)
         emp_table_frame.pack(side=tk.RIGHT )
         emp_tree = ttk.Treeview(emp_table_frame)
+
+        def load_emp_data():
+            import new_session
+            from new_base_model import Employee
+            user, password, database_name = "root", "root", "sysdb"
+
+            s = new_session.setup_db(user, password, database_name)
+            
+            #clear values from table before loading
+            for item in emp_tree.get_children():
+                emp_tree.delete(item)
+
+            for emp in s.query(Employee).all():
+                emp_tree.insert("", "end", values=(emp.employee_id, emp.employee_name, emp.employee_contact, emp.employee_email, emp.employee_role))
+            s.close()
+
+        
+        load_emp_button = tk.Button(emp_table_frame, text="Load employees", pady=10, command=load_emp_data)
+        load_emp_button.pack(side='top')
+
+
+
+        def emp_data():
+            '''Loads employee details entered from entries to table'''
+            employee_name = emp_name_entry.get()
+            employee_id = emp_id_entry.get()
+            employee_contact = emp_contact_entry.get()
+            employee_email = emp_email_entry.get()
+            employee_role = emp_role_entry.get()
+
+            emp_tree.insert("", "end", values=(employee_id, employee_name,  employee_contact, employee_email, employee_role))
 
         #define employee columns
         emp_tree['columns'] = ("employee_id", "employee_name", "employee_contact", "employee_email", "employee_role")
@@ -418,6 +468,10 @@ def design():
         tk.Label(reg_quote_frame, text="Client contact").grid(row=2, column=0, pady=5)
         tk.Label(reg_quote_frame, text="Client email").grid(row=3, column=0, pady=5)
         tk.Label(reg_quote_frame, text="Application type").grid(row=4, column=0, pady=5)
+        tk.Label(reg_quote_frame, text="Service name").grid(row=5, column=0, pady=5)
+
+        tk.Label(reg_quote_frame, text="Service Description").grid(row=6, column=1, pady=3)
+
 
         quote_num_entry = tk.Entry(reg_quote_frame, width =30)
         quote_num_entry.grid(row=0, column=1, pady=5)
@@ -435,13 +489,19 @@ def design():
         app_type_combo.bind("<<ComboboxSelected>>")
         app_type_combo.grid(row=4, column=1, pady=5)
 
+        #drop down for service name
+        service_names = ["Select service name", "Design & prototyping","Development", "Testing, Deployment and Maintainance", "Consulting"]
+        service_name_combo = ttk.Combobox(reg_quote_frame, value=service_names)
+        service_name_combo.current(0)
+        service_name_combo.bind("<<ComboboxSelected>>")
+        service_name_combo.grid(row=5, column=1)
         # Creating a text area for service description
-        service_description = tk.Text(reg_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
-        service_description.grid(row=5, column=0, columnspan=3)
+        service_description = tk.Text(reg_quote_frame, bg='#edead5', height=10, width=25, padx=20,pady=20)
+        service_description.grid(row=7, column=0, columnspan=3)
 
-        tk.Label(reg_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
+        tk.Label(reg_quote_frame, text="Service cost").grid(row=8, column=0, pady=5)
         service_cost = tk.Entry(reg_quote_frame, width=30)
-        service_cost.grid(row=6, column=1, pady=5)
+        service_cost.grid(row=8, column=1, pady=5)
 
         # creating a table that show details of the quotations created
         edit_quote_table_frame = tk.Frame(create_quote_tab)
