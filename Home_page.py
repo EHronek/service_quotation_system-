@@ -72,18 +72,26 @@ def design():
         s = new_session.setup_db(user=user, password=password, database_name=database_name)
         session = new_session.setup_db(user, password, database_name)
 
+        
+        def clear_org_entries():
+            org_name_entry.delete(0, tk.END)
+            org_contact_entry.delete(0, tk.END)
+            location_entry.delete(0, tk.END)
+            org_email_entry.delete(0, tk.END)
+            email_password_entry.delete(0, tk.END)
+            repeat_password_entry.delete(0, tk.END)
+
         org_name = org_name_entry.get()
-        print(org_name)
+        
         org_email = org_email_entry.get()
-        print(org_email)
+       
         org_contact = org_contact_entry.get()
-        print(org_contact)
+       
         org_location = location_entry.get()
-        print(org_location)
+        
         email_password = email_password_entry.get()
-        print(email_password)
+        
         repeat_email_passwd = repeat_password_entry.get()
-        print(repeat_email_passwd)
 
         if not org_name:
             org_name = "Hronek System Organization"
@@ -97,21 +105,152 @@ def design():
             org_email = "ehronek6608@stu.kemu.ac.ke"
         if not email_password:
             messagebox.showerror(title="Pavilion System", message="Error in email password!!!")
+        if email_password != repeat_email_passwd:
+            clear_org_entries()
+            messagebox.showerror(title="Pavilion System", message="password must match!")
+        else:    
+            #saving the data to the database for use later on for email
+            org_detail = Organization(organization_id=1,organization_name=org_name,organization_contact= org_contact, location=org_location, organization_email=org_email, email_password=email_password)
 
-        #saving the data to the database for use later on for email
-        org_detail = Organization(organization_id="org_05",organization_name=org_name,organization_contact= org_contact, location=org_location, organization_email=org_email, email_password=email_password)
+            try:
+                messagebox.showinfo(title="Pavilion System",message="Saving Data")
+                s.add(org_detail)
+                s.commit()
+            except Exception as e:
+                s.rollback()
+                messagebox.showerror(title="Pavilion system", message=f"Error inserting organisation: {e}")
+                print(f"Error inserting organization: {e}")
+            finally:
+                session.close()
 
-        try:
-            s.add(org_detail)
-            s.commit()
-        except Exception as e:
-            s.rollback()
-            print(f"Error inserting organization: {e}")
-        finally:
-            session.close() 
+
+    def clear():
+        pass
+
+
+    def update_org():
+        from new_base_model import Organization, Base
+        import new_session
+        # from new_base_model import Base, Organization
+        #establishes a connection with database and saves entry data to db
+        #session = new_db.connection(user, password, database)
+        user = "root"
+        password = "root"
+        database_name = "sysdb"
+        s = new_session.setup_db(user=user, password=password, database_name=database_name)
+        session = new_session.setup_db(user, password, database_name)
+
         
+        def clear():
+            upd_org_name_entry.delete(0, tk.END)
+            upd_org_contact_entry.delete(0, tk.END)
+            upd_location_entry.delete(0, tk.END)
+            upd_org_email_entry.delete(0, tk.END)
+            upd_email_password_entry.delete(0, tk.END)
+            upd_repeat_password_entry.delete(0, tk.END)
 
+        upd_org_name = upd_org_name_entry.get()
+        
+        upd_org_email = upd_org_email_entry.get()
+       
+        upd_org_contact = upd_org_contact_entry.get()
+       
+        upd_org_location = upd_location_entry.get()
+        
+        upd_email_password = upd_email_password_entry.get()
+        
+        upd_repeat_email_passwd = upd_repeat_password_entry.get()
 
+        if not upd_org_name:
+            upd_org_name = "Hronek System Organization"
+        if not upd_org_contact.isdigit():
+            upd_org_contact = None
+        else:
+            upd_org_contact = int(org_contact)
+        if not upd_org_location:
+            upd_org_location = "Kenya"
+        if not upd_org_email:
+            upd_org_email = "ehronek6608@stu.kemu.ac.ke"
+        if not upd_email_password:
+            messagebox.showerror(title="Pavilion System", message="Error in email password!!!")
+        if upd_email_password != upd_repeat_email_passwd:
+            clear()
+            messagebox.showerror(title="Pavilion System", message="password must match!")
+        else:    
+            #saving the data to the database for use later on for email
+            upd_org_detail = Organization(organization_id=1,organization_name=org_name,organization_contact= org_contact, location=org_location, organization_email=org_email, email_password=email_password)
+
+            try:
+                messagebox.showinfo(title="Pavilion System",message="Saving Data")
+                s.add(upd_org_detail)
+                s.commit()
+            except Exception as e:
+                s.rollback()
+                messagebox.showerror(title="Pavilion system", message=f"Error inserting organisation: {e}")
+                print(f"Error inserting organization: {e}")
+            finally:
+                session.close()
+           
+
+    def register_employee():
+        #Takes in employee details and sends to db
+        from new_base_model import Employee, Base
+        import new_session
+
+        def clear_emp_entry():
+            emp_name_entry.delete(0, tk.END)
+            emp_contact_entry.delete(0, tk.END)
+            emp_id_entry.delete(0, tk.END)
+            emp_email_entry.delete(0, tk.END)
+            emp_role_entry.delete(0, tk.END)
+
+        # from new_base_model import Base, Organization
+        #establishes a connection with database and saves entry data to db
+        #session = new_db.connection(user, password, database)
+        user = "root"
+        password = "root"
+        database_name = "sysdb"
+        s = new_session.setup_db(user=user, password=password, database_name=database_name)
+
+        emp_name = emp_name_entry.get()    
+        emp_id = emp_id_entry.get()
+        emp_contact= emp_contact_entry.get()
+        emp_email = emp_email_entry.get()
+        emp_role = emp_role_entry.get()
+
+        if not emp_name:
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee name can't be Null")
+        if not emp_id:
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee id can't be Null")
+        if not int(emp_contact):
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee Contact can't be Null and is digit")
+        
+        if not emp_email:
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee email can't be Null")
+        if not emp_role:
+            clear_emp_entry()
+            messagebox.showerror(title="Pavilion system", message="Employee role can't be Null")
+        else:
+            new_employee = Employee(employee_id=emp_id, 
+                                    employee_name=emp_name,
+                                    employee_contact=emp_contact,
+                                    employee_email= emp_email,
+                                    employee_role=emp_role)
+            try:
+                messagebox.showinfo(title="Pavilion system", message="Adding employee to storage")
+                s.add(new_employee)
+                s.commit()
+            except Exception as e:
+                print(f"something went wrong while sending to storage: {e}")
+                print(f"Something went wrong: {e}")
+            finally:
+                s.close()
+                clear_emp_entry()
+        
 
 
 
@@ -187,13 +326,22 @@ def design():
     load_button = tk.Button(app_frame2, text="Load details")
     load_button.grid(row=0, column=1)
 
-    update_register_button = tk.Button(app_frame2, text="Update and Register", relief=tk.RAISED, width=30)
+    update_register_button = tk.Button(app_frame2, text="Update and Register", relief=tk.RAISED, width=30, command=update_org)
     update_register_button.grid(row= 15, column =0)
 
     delete_button = tk.Button(app_frame2, text="Delete Organization account")
     delete_button.grid(row=16, column=0, pady=10, padx=20)
 
     # Designing employee registration section
+
+    def clear_emp_entries():
+        emp_name_entry.delete(0, tk.END)
+        emp_contact_entry.delete(0, tk.END)
+        emp_id_entry.delete(0, tk.END)
+        emp_email_entry.delete(0, tk.END)
+        emp_role_entry.delete(0, tk.END)
+
+
 
     tk.Label(employee_reg_tab, text="REGISTER EMPLOYEE BELOW").pack(side="top")
 
@@ -210,8 +358,8 @@ def design():
     #creating Entries for employee details
     emp_name_entry = tk.Entry(emp_details_frame, width=30)
     emp_name_entry.grid(row=2, column=0)
-    emp_id = tk.Entry(emp_details_frame, width=30)
-    emp_id.grid(row=4, column=0)
+    emp_id_entry = tk.Entry(emp_details_frame, width=30)
+    emp_id_entry.grid(row=4, column=0)
     emp_contact_entry = tk.Entry(emp_details_frame, width=30)
     emp_contact_entry.grid(row=6, column=0)
     emp_email_entry = tk.Entry(emp_details_frame, width=30)
@@ -220,10 +368,10 @@ def design():
     emp_role_entry.grid(row=10, column=0)
 
     #creating buttons for register and and update employee
-    reg_emp_button = tk.Button(emp_details_frame, text="Register employee")
+    reg_emp_button = tk.Button(emp_details_frame, text="Register employee", command=register_employee)
     reg_emp_button.grid(row=11, column=0, pady=10)
 
-    clear_button = tk.Button(emp_details_frame, text="Clear Fields")
+    clear_button = tk.Button(emp_details_frame, text="Clear Fields", command=clear_emp_entries)
     clear_button.grid(row=12, column=0, pady=10)
 
     update_employee_button = tk.Button(emp_details_frame, text="Update employee details")
@@ -237,6 +385,37 @@ def design():
         emp_table_frame = tk.Frame(employee_reg_tab)
         emp_table_frame.pack(side=tk.RIGHT )
         emp_tree = ttk.Treeview(emp_table_frame)
+
+        def load_emp_data():
+            import new_session
+            from new_base_model import Employee
+            user, password, database_name = "root", "root", "sysdb"
+
+            s = new_session.setup_db(user, password, database_name)
+            
+            #clear values from table before loading
+            for item in emp_tree.get_children():
+                emp_tree.delete(item)
+
+            for emp in s.query(Employee).all():
+                emp_tree.insert("", "end", values=(emp.employee_id, emp.employee_name, emp.employee_contact, emp.employee_email, emp.employee_role))
+            s.close()
+
+        
+        load_emp_button = tk.Button(emp_table_frame, text="Load employees", pady=10, command=load_emp_data)
+        load_emp_button.pack(side='top')
+
+
+
+        def emp_data():
+            '''Loads employee details entered from entries to table'''
+            employee_name = emp_name_entry.get()
+            employee_id = emp_id_entry.get()
+            employee_contact = emp_contact_entry.get()
+            employee_email = emp_email_entry.get()
+            employee_role = emp_role_entry.get()
+
+            emp_tree.insert("", "end", values=(employee_id, employee_name,  employee_contact, employee_email, employee_role))
 
         #define employee columns
         emp_tree['columns'] = ("employee_id", "employee_name", "employee_contact", "employee_email", "employee_role")
@@ -282,6 +461,24 @@ def design():
         reg_quote_frame = tk.Frame(create_quote_tab)
         reg_quote_frame.pack(side="left")
 
+        #create a quotation that creates a quotation
+        def create_quote_func():
+            """creates a quotation"""
+            
+            #Get user input from entries entered by user
+            quotation_number = cr_quote_num_entry.get()
+            client_name = cr_client_name_entry.get()
+            client_contact = cr_client_contact_entry.get()
+            client_email = cr_client_email_entry.get()
+            selected_application_type = cr_app_type_combo.get()
+            selected_service_name = cr_service_name_combo.get()
+            service_description_data = cr_service_description.get("1.0", tk.END).strip()
+            service_cost_amt = cr_service_cost.get()
+
+            create_quote_tree.insert("", "end", values=(quotation_number, client_name, client_contact, client_email, selected_application_type, selected_service_name, service_description_data, service_cost_amt))
+
+            
+
         #creating labals and Entries for the new quotation
         #tk.Label(reg_quote_frame, text="CREATE NEW QUOTATION BELOW").pack(side='top')
         tk.Label(reg_quote_frame, text="Quotation number").grid(row=0, column=0, pady=5)
@@ -289,52 +486,72 @@ def design():
         tk.Label(reg_quote_frame, text="Client contact").grid(row=2, column=0, pady=5)
         tk.Label(reg_quote_frame, text="Client email").grid(row=3, column=0, pady=5)
         tk.Label(reg_quote_frame, text="Application type").grid(row=4, column=0, pady=5)
+        tk.Label(reg_quote_frame, text="Service name").grid(row=5, column=0, pady=5)
 
-        quote_num_entry = tk.Entry(reg_quote_frame, width =30)
-        quote_num_entry.grid(row=0, column=1, pady=5)
-        client_name_entry = tk.Entry(reg_quote_frame, width=30)
-        client_name_entry.grid(row=1, column=1, pady=5)
-        client_contact_entry = tk.Entry(reg_quote_frame, width=30)
-        client_contact_entry.grid(row=2, column=1, pady=5)
-        client_email_entry = tk.Entry(reg_quote_frame, width=30)
-        client_email_entry.grid(row=3, column=1, pady=5)
+        tk.Label(reg_quote_frame, text="Service Description").grid(row=6, column=1, pady=3)
+
+
+        cr_quote_num_entry = tk.Entry(reg_quote_frame, width =30)
+        cr_quote_num_entry.grid(row=0, column=1, pady=5)
+        cr_client_name_entry = tk.Entry(reg_quote_frame, width=30)
+        cr_client_name_entry.grid(row=1, column=1, pady=5)
+        cr_client_contact_entry = tk.Entry(reg_quote_frame, width=30)
+        cr_client_contact_entry.grid(row=2, column=1, pady=5)
+        cr_client_email_entry = tk.Entry(reg_quote_frame, width=30)
+        cr_client_email_entry.grid(row=3, column=1, pady=5)
         
         #drop down for the application type
-        app_types = ["Select application type" ,"Desktop Application", "Web Application", "Web (Static)", "Website (Dynamic)", "Mobile Application"]
-        app_type_combo = ttk.Combobox(reg_quote_frame, value=app_types)
-        app_type_combo.current(0)
-        app_type_combo.bind("<<ComboboxSelected>>")
-        app_type_combo.grid(row=4, column=1, pady=5)
+        cr_app_types = ["Select application type" ,"Desktop Application", "Web Application", "Web (Static)", "Website (Dynamic)", "Mobile Application"]
+        cr_app_type_combo = ttk.Combobox(reg_quote_frame, value=cr_app_types)
+        cr_app_type_combo.current(0)
+        cr_app_type_combo.bind("<<ComboboxSelected>>")
+        cr_app_type_combo.grid(row=4, column=1, pady=5)
 
+        #drop down for service name
+        cr_service_names = ["Select service name", "Design & prototyping","Development", "Testing, Deployment and Maintainance", "Consulting"]
+        cr_service_name_combo = ttk.Combobox(reg_quote_frame, value=cr_service_names)
+        cr_service_name_combo.current(0)
+        cr_service_name_combo.bind("<<ComboboxSelected>>")
+        cr_service_name_combo.grid(row=5, column=1)
         # Creating a text area for service description
-        service_description = tk.Text(reg_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
-        service_description.grid(row=5, column=0, columnspan=3)
+        cr_service_description = tk.Text(reg_quote_frame, bg='#edead5', height=10, width=25, padx=20,pady=20)
+        cr_service_description.grid(row=7, column=0, columnspan=3)
 
-        tk.Label(reg_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
-        service_cost = tk.Entry(reg_quote_frame, width=30)
-        service_cost.grid(row=6, column=1, pady=5)
+        tk.Label(reg_quote_frame, text="Service cost").grid(row=8, column=0, pady=5)
+        cr_service_cost = tk.Entry(reg_quote_frame, width=30)
+        cr_service_cost.grid(row=8, column=1, pady=5)
 
         # creating a table that show details of the quotations created
-        edit_quote_table_frame = tk.Frame(create_quote_tab)
-        edit_quote_table_frame.pack(side="right")
+        create_quote_table_frame = tk.Frame(create_quote_tab)
+        create_quote_table_frame.pack(side="right")
 
         #create quotation button
-        update_quote_button = tk.Button(edit_quote_table_frame, text="Create quotation")
-        update_quote_button.pack(side='top', pady=20, padx=20)
+        create_quote_button = tk.Button(create_quote_table_frame, text="Create quotation", command=create_quote_func)
+        create_quote_button.pack(side='top', pady=20, padx=20)
 
 
-        quote_tree = ttk.Treeview(edit_quote_table_frame)
+        create_quote_tree = ttk.Treeview(create_quote_table_frame)
 
-        quote_tree['columns'] = ("quotation_number", "client_name","service_description")
-        quote_tree.column("#0", width=0, stretch=tk.NO)
-        quote_tree.column("quotation_number", anchor=tk.W, width=150)
-        quote_tree.column("client_name", anchor=tk.W, width=150)
-        quote_tree.column("service_description", anchor=tk.W, width=150)
+        create_quote_tree['columns'] = ("quotation_number", "client_name", "client_contact", "client_email","application_type", "service_type","service_description", "service_cost")
+        create_quote_tree.column("#0", width=0, stretch=tk.NO)
+        create_quote_tree.column("quotation_number", anchor=tk.W, width=70)
+        create_quote_tree.column("client_name", anchor=tk.W, width=70)
+        create_quote_tree.column("client_contact", anchor=tk.W, width=70)
+        create_quote_tree.column("client_email", anchor=tk.W, width=70)
+        create_quote_tree.column("application_type", anchor=tk.W, width=70)
+        create_quote_tree.column("service_type", anchor=tk.W, width=70)
+        create_quote_tree.column("service_description", anchor=tk.W, width=100)
+        create_quote_tree.column("service_cost", anchor=tk.W, width=70)
 
-        quote_tree.heading("#0", text='', anchor=tk.W)
-        quote_tree.heading("quotation_number", text="quotation_number", anchor=tk.W)
-        quote_tree.heading("client_name", text="client_name", anchor=tk.W)
-        quote_tree.heading("service_description", text="service_description", anchor=tk.W)
+        create_quote_tree.heading("#0", text='', anchor=tk.W)
+        create_quote_tree.heading("quotation_number", text="quotation_number", anchor=tk.W)
+        create_quote_tree.heading("client_name", text="client_name", anchor=tk.W)
+        create_quote_tree.heading("client_contact", text="Client contact", anchor=tk.W)
+        create_quote_tree.heading("client_email", text="Client Email", anchor=tk.W)
+        create_quote_tree.heading("application_type", text="Application type", anchor=tk.W)
+        create_quote_tree.heading("service_type", text="Service type", anchor=tk.W)
+        create_quote_tree.heading("service_description", text="service_description", anchor=tk.W)
+        create_quote_tree.heading("service_cost", text="Service cost", anchor=tk.W)
 
 
 
@@ -410,7 +627,7 @@ def design():
 
         #creating labals and Entries for the new quotation
         #tk.Label(view_quote_frame, text="CREATE NEW QUOTATION BELOW").pack(side='top')
-        tk.Label(view_quote_frame, text="Quotation number").grid(row=0, column=0, pady=5)
+        """ tk.Label(view_quote_frame, text="Quotation number").grid(row=0, column=0, pady=5)
         tk.Label(view_quote_frame, text="Client name").grid(row=1, column=0, pady=5)
         tk.Label(view_quote_frame, text="Client contact").grid(row=2, column=0, pady=5)
         tk.Label(view_quote_frame, text="Client email").grid(row=3, column=0, pady=5)
@@ -439,13 +656,28 @@ def design():
         tk.Label(view_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
         service_cost = tk.Entry(view_quote_frame, width=30)
         service_cost.grid(row=6, column=1, pady=5)
-
+"""
         # creating a table that show details of the quotations created
         view_quote_table_frame = tk.Frame(view_quote_tab)
         view_quote_table_frame.pack(side="right")
+ 
+        #function to view quotation
+        def view_quotation():
+            import new_session
+            from new_base_model import Quotation, Base
 
+            user = "root"
+            password = "root"
+            db_name = "sysdb"
+            session = new_session.setup_db(user=user, password=password, database_name=db_name)
+
+            for data in session.query(Quotation).all():
+                view_quote_tree.insert("", "end", values=(data.quotation_number, data.client_name, data.service_description, data.status))
+            session.close()
+            
+    
         #create quotation button
-        update_quote_button = tk.Button(view_quote_table_frame, text="Update quotation")
+        update_quote_button = tk.Button(view_quote_table_frame, text="View quotation", command=view_quotation)
         update_quote_button.pack(side='top', pady=20, padx=20)
 
 
@@ -469,7 +701,7 @@ def design():
 
 
         view_quote_tree.pack()
-        quote_tree.pack()
+        create_quote_tree.pack()
         edit_quote_tree.pack()
 
 
