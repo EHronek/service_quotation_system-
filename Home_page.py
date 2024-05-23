@@ -682,13 +682,20 @@ def design():
         ed_app_type_combo.bind("<<ComboboxSelected>>")
         ed_app_type_combo.grid(row=4, column=1, pady=5)
 
+        #drop down for service name
+        ed_service_names = ["Select service name", "Design & prototyping","Development", "Testing, Deployment and Maintainance", "Consulting"]
+        ed_service_name_combo = ttk.Combobox(edit_quote_frame, value=ed_service_names)
+        ed_service_name_combo.current(0)
+        ed_service_name_combo.bind("<<ComboboxSelected>>")
+        ed_service_name_combo.grid(row=5, column=1)
+
         # Creating a text area for service description
         ed_service_description = tk.Text(edit_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
         ed_service_description.grid(row=5, column=0, columnspan=3)
 
         tk.Label(edit_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
-        ed_service_cost = tk.Entry(edit_quote_frame, width=30)
-        ed_service_cost.grid(row=6, column=1, pady=5)
+        ed_service_cost_entry = tk.Entry(edit_quote_frame, width=30)
+        ed_service_cost_entry.grid(row=6, column=1, pady=5)
 
 
         #function to edit quotation
@@ -705,17 +712,61 @@ def design():
                 edit_quote_tree.delete(item)
 
             for data in session.query(Quotation).all():
-                edit_quote_tree.insert("", "end", values=(data.quotation_number, data.client_name, data.service_description, data.status))
+                edit_quote_tree.insert("", "end", values=(data.quotation_number, 
+                                                          data.client_name, 
+                                                          data.contact, 
+                                                          data.client_email, 
+                                                          data.application_type, 
+                                                          data.service_name, 
+                                                          data.service_description, 
+                                                          data.service_cost,
+                                                          data.status))
             session.close()
 
+        def load_edit_entries(event):
             selected_row = edit_quote_tree.focus()
 
             edit_values = edit_quote_tree.item(selected_row, "values")
 
             #check if row is actually selected
             if edit_values:
-                for data in edit_quote_tree.get_children():
-                    edit_quote_tree.insert(data, )
+                ed_quote_num_entry.delete(0, tk.END)
+                ed_client_contact_entry.delete(0, tk.END)
+                ed_client_name_entry.delete(0, tk.END)
+                ed_client_contact_entry.delete(0, tk.END)
+                ed_service_cost_entry.delete(0, tk.END)
+                ed_service_description.delete("1.0", tk.END)
+                ed_app_type_combo.current(0)
+
+
+
+                #for data in edit_quote_tree.get_children():
+                ed_quote_num_entry.insert(0, edit_values[0])
+                ed_client_name_entry.insert(0, edit_values[1])
+                ed_client_contact_entry.insert(0, edit_values[2])
+                ed_client_email_entry.insert(0, edit_values[3])
+                ed_app_type_combo.set(edit_values[4])
+                ed_service_name_combo.set(edit_values[5])
+                ed_service_description.insert(tk.END, edit_values[6])
+                ed_service_cost_entry.insert(0, edit_values[7])
+
+        def save_edited_quote():
+            pass
+    
+        def clear_ed_quote_table():
+            """for clearing the table """
+            for item in edit_quote_tree.get_children():
+                edit_quote_tree.delete(item)
+
+            #clear the entries
+            ed_quote_num_entry.delete(0, tk.END)
+            ed_client_contact_entry.delete(0, tk.END)
+            ed_client_name_entry.delete(0, tk.END)
+            ed_client_email_entry.delete(0, tk.END )
+            ed_client_contact_entry.delete(0, tk.END)
+            ed_service_cost_entry.delete(0, tk.END)
+            ed_service_description.delete("1.0", tk.END)
+            ed_app_type_combo.current(0)
 
 
         # creating a table that show details of the quotations created
@@ -723,28 +774,46 @@ def design():
         edit_quote_table_frame.pack(side="right")
 
         #create quotation button in the EDIT SECTION
-        ed_update_quote_button = tk.Button(edit_quote_table_frame, text="Update quotation", command=edit_quotation)
+        ed_update_quote_button = tk.Button(edit_quote_table_frame, text="Load quotation", command=edit_quotation)
         ed_update_quote_button.pack(side='top', pady=20, padx=20)
+
+        #save the edit details
+        ed_save_quote_button = tk.Button(edit_quote_table_frame, text="Save Data", command=save_edited_quote)
+        ed_save_quote_button.pack(side="top", pady=10)
+
+        #clear data
+        ed_clear_quote_button = tk.Button(edit_quote_table_frame, text="Delete Data", command=clear_ed_quote_table)
+        ed_clear_quote_button.pack(side='top', pady=20, padx=20)
 
         #function to edit quotation
 
 
         edit_quote_tree = ttk.Treeview(edit_quote_table_frame)
 
-        edit_quote_tree['columns'] = ("quotation_number", "client_name","service_description", "status")
+        edit_quote_tree['columns'] = ("quotation_number", "client_name", "client_contact", "client_email","application_type", "service_type","service_description", "service_cost", "status")
         edit_quote_tree.column("#0", width=0, stretch=tk.NO)
         edit_quote_tree.column("quotation_number", anchor=tk.W, width=150)
         edit_quote_tree.column("client_name", anchor=tk.W, width=150)
+        edit_quote_tree.column("client_contact", anchor=tk.W, width=100)
+        edit_quote_tree.column("client_email", anchor=tk.W, width=70)
+        edit_quote_tree.column("application_type", anchor=tk.W, width=70)
+        edit_quote_tree.column("service_type", anchor=tk.W, width=70)
         edit_quote_tree.column("service_description", anchor=tk.W, width=150)
+        edit_quote_tree.column("service_cost", anchor=tk.W, width=70)
         edit_quote_tree.column("status", anchor=tk.W, width=150)
 
         edit_quote_tree.heading("#0", text='', anchor=tk.W)
         edit_quote_tree.heading("quotation_number", text="quotation_number", anchor=tk.W)
         edit_quote_tree.heading("client_name", text="client_name", anchor=tk.W)
+        edit_quote_tree.heading("client_contact", text="client contact", anchor=tk.W)
+        edit_quote_tree.heading("client_email", text="client email", anchor=tk.W)
+        edit_quote_tree.heading("application_type", text="Application type", anchor=tk.W)
+        edit_quote_tree.heading("service_type", text="Service type", anchor=tk.W)
         edit_quote_tree.heading("service_description", text="service_description", anchor=tk.W)
         edit_quote_tree.heading("status", text="status",anchor=tk.W)
 
-        #view quotation section
+        # Bind the Treeview select event to the load_data function
+        edit_quote_tree.bind("<ButtonRelease-1>", load_edit_entries)
 
         
 
