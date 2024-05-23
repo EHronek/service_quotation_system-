@@ -461,10 +461,54 @@ def design():
         reg_quote_frame = tk.Frame(create_quote_tab)
         reg_quote_frame.pack(side="left")
 
+        def clear_quote_entries_func():
+            cr_quote_num_entry.delete(0, tk.END)
+            cr_client_name_entry.delete(0, tk.END)
+            cr_client_contact_entry.delete(0, tk.END)
+            cr_client_email_entry.delete(0, tk.END)
+            #cr_app_type_combo.delete(0, tk.END)
+            #cr_service_name_combo.delete(0, tk.END)
+            #cr_service_description.delete(0, tk.END)
+            cr_service_cost.delete(0, tk.END)
+
         #create a quotation that creates a quotation
-        def create_quote_func():
+        def save_quote_func():
             """creates a quotation"""
+            import new_session
+            from new_base_model import Quotation
+            from tkinter import messagebox
+
+            user = "root"
+            database = "sysdb"
+            password="root"
+
+            #create a session
+            create_session = new_session.setup_db(user, password, database_name=database)
+
+            #
+            for row in create_quote_tree.get_children():
+                values = create_quote_tree.item(row, "values")
+                quotation_number, client_name, client_contact, client_email, selected_application_type, selected_service_name, service_description, service_cost = values
+
+            quote_created = Quotation(quotation_number=quotation_number,
+                                      client_name=client_name,
+                                      contact=client_contact,
+                                      client_email=client_email,
+                                      application_type= selected_application_type,
+                                      service_name=selected_service_name,
+                                      service_cost=service_cost,
+                                      service_description=service_description)
             
+            create_session.add(quote_created)
+            create_session.commit()
+            create_session.close()
+
+            for row in create_quote_tree.get_children():
+                create_quote_tree.delete(row)
+
+
+
+        def create_quote_func():
             #Get user input from entries entered by user
             quotation_number = cr_quote_num_entry.get()
             client_name = cr_client_name_entry.get()
@@ -475,9 +519,55 @@ def design():
             service_description_data = cr_service_description.get("1.0", tk.END).strip()
             service_cost_amt = cr_service_cost.get()
 
-            create_quote_tree.insert("", "end", values=(quotation_number, client_name, client_contact, client_email, selected_application_type, selected_service_name, service_description_data, service_cost_amt))
+            def clear_cr_quote_table():
+                """for clearing the table """
+                for item in create_quote_tree.get_children():
+                    create_quote_tree.delete(item)
 
-            
+            """def clear_quote_entries_func():
+                cr_quote_num_entry.delete(0, tk.END)
+                cr_client_name_entry.delete(0, tk.END)
+                cr_client_contact_entry.delete(0, tk.END)
+                cr_client_email_entry.delete(0, tk.END)
+                #cr_app_type_combo.delete(0, tk.END)
+                #cr_service_name_combo.delete(0, tk.END)
+                #cr_service_description.delete(0, tk.END)
+                cr_service_cost.delete(0, tk.END) """
+
+            if not quotation_number:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="Quotation can't be NULL")
+            if not client_name:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="Client name can't be NULL")
+            if not client_email:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="client email can't be NULL")
+            if not client_contact:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="Input client contact")
+            if not selected_application_type:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="select application type")
+            if not selected_service_name:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="select service name")
+            if not service_description_data:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="Ensure you describe the service")
+            if not service_cost_amt:
+                clear_quote_entries_func()
+                messagebox.showerror(title="Pavilion system", message="Insert amount")
+            #for data in create_session.query(Quotation).all():
+            elif quotation_number and client_name and client_contact and client_email and selected_application_type and selected_service_name and service_cost_amt:
+                
+                create_quote_tree.insert("", "end", values=(quotation_number, client_name, client_contact, client_email, selected_application_type, selected_service_name, service_description_data, service_cost_amt))
+
+        def clear_cr_quote_table():
+            """for clearing the table """
+            for item in create_quote_tree.get_children():
+                create_quote_tree.delete(item)
+
 
         #creating labals and Entries for the new quotation
         #tk.Label(reg_quote_frame, text="CREATE NEW QUOTATION BELOW").pack(side='top')
@@ -529,7 +619,15 @@ def design():
         create_quote_button = tk.Button(create_quote_table_frame, text="Create quotation", command=create_quote_func)
         create_quote_button.pack(side='top', pady=20, padx=20)
 
+        #Delete quoatation button
+        cr_delete_quote_button = tk.Button(create_quote_table_frame, text="Delete Data", command=clear_cr_quote_table)
+        cr_delete_quote_button.pack(side='top', pady=20, padx=20)
 
+        #Save button that saves data to the database
+        cr_save_quote_button = tk.Button(create_quote_table_frame, text="Save Data", command=save_quote_func)
+        cr_save_quote_button.pack(side="top", pady=10)
+
+        
         create_quote_tree = ttk.Treeview(create_quote_table_frame)
 
         create_quote_tree['columns'] = ("quotation_number", "client_name", "client_contact", "client_email","application_type", "service_type","service_description", "service_cost")
@@ -568,37 +666,67 @@ def design():
         tk.Label(edit_quote_frame, text="Client email").grid(row=3, column=0, pady=5)
         tk.Label(edit_quote_frame, text="Application type").grid(row=4, column=0, pady=5)
 
-        quote_num_entry = tk.Entry(edit_quote_frame, width =30)
-        quote_num_entry.grid(row=0, column=1, pady=5)
-        client_name_entry = tk.Entry(edit_quote_frame, width=30)
-        client_name_entry.grid(row=1, column=1, pady=5)
-        client_contact_entry = tk.Entry(edit_quote_frame, width=30)
-        client_contact_entry.grid(row=2, column=1, pady=5)
-        client_email_entry = tk.Entry(edit_quote_frame, width=30)
-        client_email_entry.grid(row=3, column=1, pady=5)
+        ed_quote_num_entry = tk.Entry(edit_quote_frame, width =30)
+        ed_quote_num_entry.grid(row=0, column=1, pady=5)
+        ed_client_name_entry = tk.Entry(edit_quote_frame, width=30)
+        ed_client_name_entry.grid(row=1, column=1, pady=5)
+        ed_client_contact_entry = tk.Entry(edit_quote_frame, width=30)
+        ed_client_contact_entry.grid(row=2, column=1, pady=5)
+        ed_client_email_entry = tk.Entry(edit_quote_frame, width=30)
+        ed_client_email_entry.grid(row=3, column=1, pady=5)
         
         #drop down for the application type
-        app_types = ["Select application type" ,"Desktop Application", "Web Application", "Web (Static)", "Website (Dynamic)", "Mobile Application"]
-        app_type_combo = ttk.Combobox(edit_quote_frame, value=app_types)
-        app_type_combo.current(0)
-        app_type_combo.bind("<<ComboboxSelected>>")
-        app_type_combo.grid(row=4, column=1, pady=5)
+        ed_app_types = ["Select application type" ,"Desktop Application", "Web Application", "Web (Static)", "Website (Dynamic)", "Mobile Application"]
+        ed_app_type_combo = ttk.Combobox(edit_quote_frame, value=ed_app_types)
+        ed_app_type_combo.current(0)
+        ed_app_type_combo.bind("<<ComboboxSelected>>")
+        ed_app_type_combo.grid(row=4, column=1, pady=5)
 
         # Creating a text area for service description
-        service_description = tk.Text(edit_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
-        service_description.grid(row=5, column=0, columnspan=3)
+        ed_service_description = tk.Text(edit_quote_frame, bg='#edead5', height=15, width=25, padx=20,pady=20)
+        ed_service_description.grid(row=5, column=0, columnspan=3)
 
         tk.Label(edit_quote_frame, text="Service cost").grid(row=6, column=0, pady=5)
-        service_cost = tk.Entry(edit_quote_frame, width=30)
-        service_cost.grid(row=6, column=1, pady=5)
+        ed_service_cost = tk.Entry(edit_quote_frame, width=30)
+        ed_service_cost.grid(row=6, column=1, pady=5)
+
+
+        #function to edit quotation
+        def edit_quotation():
+            import new_session
+            from new_base_model import Quotation, Base
+
+            user = "root"
+            password = "root"
+            db_name = "sysdb"
+            session = new_session.setup_db(user=user, password=password, database_name=db_name)
+            
+            for item in edit_quote_tree.get_children():
+                edit_quote_tree.delete(item)
+
+            for data in session.query(Quotation).all():
+                edit_quote_tree.insert("", "end", values=(data.quotation_number, data.client_name, data.service_description, data.status))
+            session.close()
+
+            selected_row = edit_quote_tree.focus()
+
+            edit_values = edit_quote_tree.item(selected_row, "values")
+
+            #check if row is actually selected
+            if edit_values:
+                for data in edit_quote_tree.get_children():
+                    edit_quote_tree.insert(data, )
+
 
         # creating a table that show details of the quotations created
         edit_quote_table_frame = tk.Frame(edit_quote_tab)
         edit_quote_table_frame.pack(side="right")
 
-        #create quotation button
-        update_quote_button = tk.Button(edit_quote_table_frame, text="Update quotation")
-        update_quote_button.pack(side='top', pady=20, padx=20)
+        #create quotation button in the EDIT SECTION
+        ed_update_quote_button = tk.Button(edit_quote_table_frame, text="Update quotation", command=edit_quotation)
+        ed_update_quote_button.pack(side='top', pady=20, padx=20)
+
+        #function to edit quotation
 
 
         edit_quote_tree = ttk.Treeview(edit_quote_table_frame)
@@ -670,15 +798,35 @@ def design():
             password = "root"
             db_name = "sysdb"
             session = new_session.setup_db(user=user, password=password, database_name=db_name)
+            
+            for item in view_quote_tree.get_children():
+                view_quote_tree.delete(item)
 
             for data in session.query(Quotation).all():
                 view_quote_tree.insert("", "end", values=(data.quotation_number, data.client_name, data.service_description, data.status))
             session.close()
             
-    
+       
         #create quotation button
         update_quote_button = tk.Button(view_quote_table_frame, text="View quotation", command=view_quotation)
         update_quote_button.pack(side='top', pady=20, padx=20)
+
+                #function to view quotation
+        def view_quotation():
+            import new_session
+            from new_base_model import Quotation, Base
+
+            user = "root"
+            password = "root"
+            db_name = "sysdb"
+            session = new_session.setup_db(user=user, password=password, database_name=db_name)
+            
+            for item in view_quote_tree.get_children():
+                view_quote_tree.delete(item)
+
+            for data in session.query(Quotation).all():
+                view_quote_tree.insert("", "end", values=(data.quotation_number, data.client_name, data.service_description, data.status))
+            session.close()
 
 
         view_quote_tree = ttk.Treeview(view_quote_table_frame)
