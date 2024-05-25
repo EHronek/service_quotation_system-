@@ -1,0 +1,4 @@
+client_counter:17
+quotation_counter:24
+organization_counter:0
+employee_counter:24

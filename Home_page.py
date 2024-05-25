@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from counters import employee_id
 
 
 def design():
@@ -106,8 +107,10 @@ def design():
         if not email_password:
             messagebox.showerror(title="Pavilion System", message="Error in email password!!!")
         if email_password != repeat_email_passwd:
-            clear_org_entries()
+            #clear_org_entries()
+            email_password_entry.delete(0, tk.END)
             messagebox.showerror(title="Pavilion System", message="password must match!")
+            email_password_entry.delete(0, tk.END)
         else:    
             #saving the data to the database for use later on for email
             org_detail = Organization(organization_id=1,organization_name=org_name,organization_contact= org_contact, location=org_location, organization_email=org_email, email_password=email_password)
@@ -196,11 +199,12 @@ def design():
         #Takes in employee details and sends to db
         from new_base_model import Employee, Base
         import new_session
+       
 
         def clear_emp_entry():
             emp_name_entry.delete(0, tk.END)
             emp_contact_entry.delete(0, tk.END)
-            emp_id_entry.delete(0, tk.END)
+            #emp_id_entry.delete(0, tk.END)
             emp_email_entry.delete(0, tk.END)
             emp_role_entry.delete(0, tk.END)
 
@@ -250,6 +254,8 @@ def design():
             finally:
                 s.close()
                 clear_emp_entry()
+                new_emp_id = employee_id()
+                emp_id_entry.insert(0, new_emp_id)
         
 
 
@@ -358,10 +364,19 @@ def design():
     #creating Entries for employee details
     emp_name_entry = tk.Entry(emp_details_frame, width=30)
     emp_name_entry.grid(row=2, column=0)
+
+
+    #from counters import employee_id
+    
     emp_id_entry = tk.Entry(emp_details_frame, width=30)
     emp_id_entry.grid(row=4, column=0)
+
+    emp_id = employee_id()
+    emp_id_entry.insert(0, emp_id)
+
     emp_contact_entry = tk.Entry(emp_details_frame, width=30)
     emp_contact_entry.grid(row=6, column=0)
+
     emp_email_entry = tk.Entry(emp_details_frame, width=30)
     emp_email_entry.grid(row=8, column=0)
     emp_role_entry = tk.Entry(emp_details_frame, width=30)
@@ -445,6 +460,10 @@ def design():
 
     # CREATING A QUOTATION SECTION
     def quotation():
+        
+        from counters import create_quote_id
+        quotation_num = create_quote_id()
+
         quote_notebook = ttk.Notebook(quotation_tab)
         create_quote_tab = tk.Frame(quote_notebook)
         view_quote_tab = tk.Frame(quote_notebook)
@@ -466,9 +485,9 @@ def design():
             cr_client_name_entry.delete(0, tk.END)
             cr_client_contact_entry.delete(0, tk.END)
             cr_client_email_entry.delete(0, tk.END)
-            #cr_app_type_combo.delete(0, tk.END)
-            #cr_service_name_combo.delete(0, tk.END)
-            #cr_service_description.delete(0, tk.END)
+            cr_app_type_combo.current(0)
+            cr_service_name_combo.current(0)
+            cr_service_description.delete("1.0", tk.END)
             cr_service_cost.delete(0, tk.END)
 
         #create a quotation that creates a quotation
@@ -505,6 +524,9 @@ def design():
 
             for row in create_quote_tree.get_children():
                 create_quote_tree.delete(row)
+            
+            clear_quote_entries_func()
+            cr_quote_num_entry.insert(0, str(create_quote_id()))
 
 
 
@@ -583,8 +605,11 @@ def design():
 
         cr_quote_num_entry = tk.Entry(reg_quote_frame, width =30)
         cr_quote_num_entry.grid(row=0, column=1, pady=5)
+        cr_quote_num_entry.insert(0, str(quotation_num))
+
         cr_client_name_entry = tk.Entry(reg_quote_frame, width=30)
         cr_client_name_entry.grid(row=1, column=1, pady=5)
+
         cr_client_contact_entry = tk.Entry(reg_quote_frame, width=30)
         cr_client_contact_entry.grid(row=2, column=1, pady=5)
         cr_client_email_entry = tk.Entry(reg_quote_frame, width=30)
@@ -925,7 +950,85 @@ def design():
     quotation()
 
 
+
     def client_registration():
+        from counters import create_client_id
+        from new_base_model import Base, Quotation, Client
+        from new_session import setup_db
+
+        client_id = create_client_id()
+        
+        def cl_load_data():
+            
+            user = "root"
+            password = "root"
+            db_name = "sysdb"
+            session = setup_db(user=user, password=password, database_name=db_name)
+            cl_quote = cl_load_entry.get()
+
+            row = session.query(Quotation).filter_by(quotation_number=cl_quote).first()
+            cl_client_name_entry.insert(0, row.client_name)
+            cl_app_type_entry.insert(0, row.application_type)
+            cl_project_title_entry.insert(0, row.service_name)
+            cl_project_cost_entry.insert(0, row.service_cost)
+            cl_client_contact_entry.insert(0, row.contact)
+            cl_client_email_entry.insert(0, row.client_email)
+
+            session.close()
+
+
+        def cl_clear_entries():
+            #cl_client_id_entry.delete(0, tk.END)
+            cl_client_name_entry.delete(0, tk.END)
+            cl_app_type_entry.delete(0, tk.END)
+            cl_project_title_entry.delete(0, tk.END)
+            cl_project_cost_entry.delete(0, tk.END)
+            cl_client_contact_entry.delete(0, tk.END)
+            cl_client_email_entry.delete(0, tk.END)
+
+        def cl_reg():
+            user = "root"
+            password = "root"
+            db_name = "sysdb"
+            session = setup_db(user=user, password=password, database_name=db_name)
+            
+            cl_quote = cl_load_entry.get()
+            cl_id = cl_client_id_entry.get()
+            cl_email = cl_client_email_entry.get()
+            cl_name = cl_client_name_entry.get()
+            cl_app_type = cl_app_type_entry.get()
+            cl_project_title = cl_project_title_entry.get()
+            cl_project_cost = cl_project_cost_entry.get()
+            cl_contact = cl_client_contact_entry.get()
+
+            new_client = Client(client_id=cl_id,
+                                client_name=cl_name,
+                                contact=cl_contact,
+                                email=cl_email,
+                                application_type=cl_app_type,
+                                project_title =cl_project_title,
+                                project_cost=cl_project_cost)
+            
+            try:
+                session.add(new_client)
+                session.commit()
+                messagebox.showinfo(title="Pavilion system", message="client saved successfully")
+            except Exception as e:
+                session.rollback()
+                messagebox.showerror(title="Error message", message="Something went wrong while registering client")
+            finally:
+                for item in client_tree.get_children():
+                    client_tree.delete(item)
+                for client in session.query(Client).all():
+                    client_tree.insert("", "end", values=(client.client_id, client.client_name, client.contact,client.email, client.application_type, client.project_title, client.project_cost))
+                session.close()
+                new_cl_id = create_client_id()
+                cl_client_id_entry.insert(0, new_cl_id)
+            
+
+
+
+        """Client registration section"""
         client_reg_frame = tk.Frame(registration_tab)
         client_reg_frame.pack(side="top")
 
@@ -941,29 +1044,31 @@ def design():
 
 
         #creating entry field for client details
-        load_entry = tk.Entry(client_reg_frame, width=50)
-        load_entry.grid(row=3, column=0,pady=25)
+        cl_load_entry = tk.Entry(client_reg_frame, width=50)
+        cl_load_entry.grid(row=3, column=0,pady=25)
 
-        load_button = tk.Button(client_reg_frame, text="Load details")
-        load_button.grid(row=3, column=1)
+        cl_load_button = tk.Button(client_reg_frame, text="Load details", command=cl_load_data)
+        cl_load_button.grid(row=3, column=1)
 
-        client_id_entry = tk.Entry(client_reg_frame, width=50)
-        client_id_entry.grid(row=4, column=1, padx=3, pady=3)
-        client_name_entry = tk.Entry(client_reg_frame, width=50)
-        client_name_entry.grid(row=5, column=1, padx=3, pady=3)
-        app_type_entry = tk.Entry(client_reg_frame, width=50)
-        app_type_entry.grid(row=6, column=1, padx=3, pady=3)
-        project_title_entry = tk.Entry(client_reg_frame, width=50)
-        project_title_entry.grid(row=7, column=1, padx=3, pady=3)
-        project_cost_entry = tk.Entry(client_reg_frame, width=50)
-        project_cost_entry.grid(row=8, column=1, padx=3, pady=3)
-        client_contact_entry = tk.Entry(client_reg_frame, width=50)
-        client_contact_entry.grid(row=9, column=1, padx=3, pady=3)
-        client_email_entry = tk.Entry(client_reg_frame, width=50)
-        client_email_entry.grid(row=10, column=1, padx=3, pady=3)
+        cl_client_id_entry = tk.Entry(client_reg_frame, width=50)
+        cl_client_id_entry.grid(row=4, column=1, padx=3, pady=3)
+        cl_client_id_entry.insert(0, client_id)
 
-        confirm_reg_button = tk.Button(client_reg_frame, text="Confirm registration", width=20)
-        confirm_reg_button.grid(row=10, column=4, pady=5)
+        cl_client_name_entry = tk.Entry(client_reg_frame, width=50)
+        cl_client_name_entry.grid(row=5, column=1, padx=3, pady=3)
+        cl_app_type_entry = tk.Entry(client_reg_frame, width=50)
+        cl_app_type_entry.grid(row=6, column=1, padx=3, pady=3)
+        cl_project_title_entry = tk.Entry(client_reg_frame, width=50)
+        cl_project_title_entry.grid(row=7, column=1, padx=3, pady=3)
+        cl_project_cost_entry = tk.Entry(client_reg_frame, width=50)
+        cl_project_cost_entry.grid(row=8, column=1, padx=3, pady=3)
+        cl_client_contact_entry = tk.Entry(client_reg_frame, width=50)
+        cl_client_contact_entry.grid(row=9, column=1, padx=3, pady=3)
+        cl_client_email_entry = tk.Entry(client_reg_frame, width=50)
+        cl_client_email_entry.grid(row=10, column=1, padx=3, pady=3)
+
+        cl_confirm_reg_button = tk.Button(client_reg_frame, text="Confirm registration", width=20, command=cl_reg)
+        cl_confirm_reg_button.grid(row=10, column=4, pady=5)
 
         #CREATE A CALENDER DATE PICKER : REM
 
