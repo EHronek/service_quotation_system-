@@ -15,9 +15,10 @@ frame.pack(pady=20,padx=60, fill='both', expand=True)
 
 def access_system_role():
     pass
+
 access_role = ["Administrator", "User"]
 selected_role = ctk.StringVar(frame)
-login_as = ctk.CTkOptionMenu(master=frame, *access_role, command=access_system_role)
+login_as = ctk.CTkOptionMenu(master=frame, values=access_role, command=access_system_role)
 
 label = ctk.CTkLabel(master=frame, text="Login System")
 label.pack(pady=12, padx=10)

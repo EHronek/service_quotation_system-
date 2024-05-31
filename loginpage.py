@@ -32,6 +32,11 @@ def login():
         pass
 
     def auth_details():
+
+        from new_session import setup_db
+        from new_base_model import User
+
+        session = setup_db("root", "root", "sysdb")
         
         username = username_entry.get()
         password = password_entry.get()
@@ -40,7 +45,33 @@ def login():
         role = access_dropdown.get()
         #role = "Administrator"
 
-        if role == "Super Administrator":
+        users = session.query(User).all()
+
+        for user in users:
+            if role == user.access_level:
+                if username == user.username and password == user.user_password:
+                    messagebox.showinfo(title="User login", message="Login Successfull")
+                    try:
+                        username_entry.delete(0, tk.END)
+                        password_entry.delete(0, tk.END)
+                        access_dropdown.current(0)
+                        design()
+                    except Exception as e:
+                        messagebox.showerror(title="loading Failure", message=f"Something went wrong while loading application, {e}")
+                    finally:
+                        session.close()
+            
+            else:
+                messagebox.showerror(title="User Login", message="User enter does not exist")
+                username_entry.delete(0, tk.END)
+                password_entry.delete(0, tk.END)
+                access_dropdown.current(0)
+                session.close()
+
+
+
+
+    """         if role == "Super Administrator":
             if username == "SuperAdm" and password == "@superAdmin":
                 print("Login Successfull")
                 messagebox.showinfo(title="Pavilion Information system", message="Super Administrator login successful")
@@ -70,7 +101,7 @@ def login():
             else:
                 print("Login Failure")
                 messagebox.showerror(title="Pavilion Information System", message=" User Login Unsuccessful. TRY AGAIN!!!")
-
+    """
 
     # Access system as who
 
